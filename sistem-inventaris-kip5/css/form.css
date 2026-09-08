@@ -1,0 +1,36 @@
+/* ==========================================================================
+   form.css — field, input, select, textarea, checkbox/radio
+   ========================================================================== */
+
+.field{ display:flex; flex-direction:column; gap:.4rem; margin-bottom:1.1rem; }
+.field label{ font-size:.82rem; font-weight:700; color:var(--ink-700); }
+.field .hint{ font-size:.76rem; color:var(--ink-500); font-weight:500; }
+.input, select.input, textarea.input{
+  font-family:var(--font-ui);
+  font-size:.95rem;
+  padding:.78rem .95rem;
+  border-radius:10px;
+  border:1.5px solid var(--line);
+  background:var(--cream-50);
+  color:var(--ink-900);
+  transition:border-color .15s ease, background .15s ease;
+  width:100%;
+}
+textarea.input{ resize:vertical; min-height:90px; font-family:inherit; }
+.input::placeholder{ color:var(--ink-500); }
+.input:focus{ border-color:var(--maroon-600); background:var(--white); outline:none; }
+.input-icon-wrap{ position:relative; }
+.input-icon-wrap .input{ padding-left:2.6rem; }
+.input-icon-wrap svg{
+  position:absolute; left:.9rem; top:50%; transform:translateY(-50%);
+  color:var(--ink-500); width:18px; height:18px;
+}
+.checkbox-row{ display:flex; align-items:center; gap:.55rem; font-size:.86rem; color:var(--ink-700); }
+.checkbox-row input{ width:16px; height:16px; accent-color:var(--maroon-700); }
+
+.form-grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:0 1.1rem; }
+.form-actions{ display:flex; justify-content:flex-end; gap:.7rem; margin-top:.6rem; padding-top:1.2rem; border-top:1px solid var(--line-soft); }
+
+@media (max-width: 640px){
+  .form-grid-2{ grid-template-columns:1fr; }
+}

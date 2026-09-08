@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riwayat — SIPIN KIP Aceh Tamiang</title>
+<link rel="icon" type="image/png" href="../assets/images/favicon-32.png">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/table.css">
+<link rel="stylesheet" href="../css/form.css">
+<link rel="stylesheet" href="../css/modal.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<link rel="stylesheet" href="../css/responsive.css">
+
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="seal-ring"><img src="../assets/images/logo-kip.png" alt="Lambang KIP"></div>
+      <div>
+        <div class="name">SIPIN</div>
+        <div class="org">KIP Aceh Tamiang</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Utama</div>
+      <a href="dashboard.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </a>
+      <a href="pegawai.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c.8-3.6 3.4-5.6 6.5-5.6s5.7 2 6.5 5.6"/><circle cx="18" cy="8" r="2.6"/><path d="M16.2 14.6c2.4.2 4.2 1.9 4.8 4.6"/></svg>
+        Manajemen Pegawai
+      </a>
+      <div class="sidebar-section">Inventaris</div>
+      <a href="inventaris.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        Manajemen Inventaris
+      </a>
+      <a href="peminjaman.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/><path d="M8 13h8M8 17h5"/></svg>
+        Pencatatan Peminjaman
+      </a>
+      <a href="bast.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/><path d="m8.5 14 2 2 4.5-4.5"/></svg>
+        BAST
+      </a>
+      <a href="pengembalian.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+        Pengembalian
+      </a>
+      <div class="sidebar-section">Riwayat & Laporan</div>
+      <a href="riwayat.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        Riwayat
+      </a>
+      <a href="laporan.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5"/><path d="M4 19h16"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="14" width="3" height="3"/></svg>
+        Laporan Bulanan
+      </a>
+      <div class="sidebar-section">Pengaturan</div>
+      <a href="pengaturan-bast.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+        Pengaturan BAST
+      </a>
+      <a href="profil.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 4.5-6 8-6s7 2 8 6"/></svg>
+        Profil Saya
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">Masuk sebagai <b style="color:var(--gold-500);">Admin Logistik</b></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex; align-items:center; gap:.9rem;">
+        <button class="btn btn-icon menu-toggle" data-menu-toggle aria-label="Buka menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div>
+          <h1>Riwayat</h1>
+          <div class="path">Riwayat peminjaman & pengembalian</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-icon" aria-label="Notifikasi" id="btn-notif">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        </button>
+        <div class="profile-chip" data-profile-toggle>
+          <div class="avatar">FK</div>
+          <div class="info">
+            <b>Fakhruddin</b>
+            <span>Admin Logistik</span>
+          </div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--ink-500);"><path d="m6 9 6 6 6-6"/></svg>
+
+          <div class="profile-dropdown">
+            <a href="profil.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 4.5-6 8-6s7 2 8 6"/></svg>
+              Profil Saya
+            </a>
+            <a href="#" data-logout class="danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+              Keluar
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1 style="font-size:1.4rem;">Riwayat Peminjaman &amp; Pengembalian</h1>
+          <p class="desc">Seluruh transaksi yang pernah tercatat, termasuk yang sudah dikembalikan.</p>
+        </div>
+      </div>
+
+      <div class="card table-card">
+        <div class="table-card-head">
+          <h3>Riwayat Transaksi</h3>
+          <div class="table-tools">
+            <input class="input" data-table-search="tabel-riwayat" placeholder="Cari nama pegawai atau barang…">
+            <input class="input" type="date" style="width:160px;">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="tabel-riwayat">
+            <thead><tr><th>No. BAST</th><th>Pegawai</th><th>Barang</th><th>Tgl Pinjam</th><th>Tgl Kembali</th><th>Kondisi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="table-foot riwayat-footer">
+
+  <span id="footer-riwayat-text">
+    Menampilkan 0 dari 0 transaksi
+  </span>
+
+  <div class="riwayat-pagination">
+
+    <button
+      class="btn btn-ghost btn-sm"
+      id="btn-prev-riwayat"
+      type="button"
+      disabled
+    >
+      Sebelumnya
+    </button>
+
+    <button
+      class="btn btn-ghost btn-sm"
+      id="btn-next-riwayat"
+      type="button"
+      disabled
+    >
+      Berikutnya
+    </button>
+
+  </div>
+
+
+    </main>
+  </div>
+</div>
+
+<div id="toast-root" class="toast-stack"></div>
+
+<script type="module" src="../js/config.js"></script>
+<script type="module" src="../js/supabase.js"></script>
+<script type="module" src="../js/auth/auth-guard.js"></script>
+<script src="../js/components/sidebar.js"></script>
+<script src="../js/components/modal.js"></script>
+<script src="../js/components/notification.js"></script>
+<script src="../js/components/logout.js"></script>
+<script type="module" src="../js/admin/riwayat.js"></script>
+
+</body>
+</html>

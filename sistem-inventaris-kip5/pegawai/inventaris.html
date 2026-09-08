@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Daftar Inventaris — SIPIN KIP Aceh Tamiang</title>
+
+  <link rel="icon" type="image/png" href="../assets/images/favicon-32.png">
+
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/table.css">
+  <link rel="stylesheet" href="../css/form.css">
+  <link rel="stylesheet" href="../css/modal.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+
+    /* =====================================================
+       HALAMAN INVENTARIS PEGAWAI
+       ===================================================== */
+
+    .inventaris-page {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+
+    /* =====================================================
+       HEADER
+       ===================================================== */
+
+    .inventaris-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .inventaris-header-text h1 {
+      margin: 0 0 6px;
+      font-size: 1.45rem;
+      font-weight: 700;
+    }
+
+    .inventaris-header-text p {
+      margin: 0;
+      color: var(--ink-500);
+      font-size: .86rem;
+      line-height: 1.5;
+    }
+
+    .btn-ajukan {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+
+    /* =====================================================
+       CARD PENGAJUAN
+       ===================================================== */
+
+    .pengajuan-card {
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+
+    .pengajuan-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .pengajuan-card-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .pengajuan-card-subtitle {
+      margin: 4px 0 0;
+      font-size: .78rem;
+      color: var(--ink-500);
+    }
+
+
+    /* =====================================================
+       LIST PENGAJUAN
+       ===================================================== */
+
+    .pengajuan-list {
+      padding: 16px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pengajuan-empty {
+      padding: 28px 15px;
+      text-align: center;
+      color: var(--ink-500);
+      font-size: .84rem;
+    }
+
+    .pengajuan-item {
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .pengajuan-item.menunggu {
+      border-left: 4px solid #d39e18;
+    }
+
+    .pengajuan-item.disetujui {
+      border-left: 4px solid #16845b;
+    }
+
+    .pengajuan-item.ditolak {
+      border-left: 4px solid #c83c32;
+    }
+
+    .pengajuan-item.dikembalikan {
+      border-left: 4px solid #53758d;
+    }
+
+    .pengajuan-main {
+      padding: 15px 17px;
+    }
+
+    .pengajuan-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+
+    .pengajuan-number {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--ink-800);
+    }
+
+    .pengajuan-date {
+      margin-top: 3px;
+      font-size: .75rem;
+      color: var(--ink-500);
+    }
+
+    .pengajuan-info {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 7px 12px;
+      font-size: .8rem;
+    }
+
+    .pengajuan-info-label {
+      color: var(--ink-500);
+    }
+
+    .pengajuan-info-value {
+      color: var(--ink-800);
+      font-weight: 500;
+    }
+
+    .pengajuan-barang {
+      margin-top: 13px;
+      padding-top: 13px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .pengajuan-barang-title {
+      margin-bottom: 7px;
+      font-size: .77rem;
+      font-weight: 700;
+      color: var(--ink-700);
+    }
+
+    .barang-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .barang-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 9px;
+      border-radius: 7px;
+      background: var(--cream-100);
+      color: var(--ink-700);
+      font-size: .74rem;
+    }
+
+    .barang-chip strong {
+      font-weight: 700;
+    }
+
+
+    /* =====================================================
+       PESAN DITOLAK / DISETUJUI
+       ===================================================== */
+
+    .pengajuan-message {
+      margin-top: 13px;
+      padding: 11px 13px;
+      border-radius: 8px;
+      font-size: .78rem;
+      line-height: 1.55;
+    }
+
+    .pengajuan-message.ditolak {
+      background: #fff1f0;
+      color: #8e2821;
+    }
+
+    .pengajuan-message.disetujui {
+      background: #eefaf4;
+      color: #176b49;
+    }
+
+    .pengajuan-message strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+
+    /* =====================================================
+       BADGE STATUS
+       ===================================================== */
+
+    .status-pengajuan {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: .7rem;
+      font-weight: 700;
+    }
+
+    .status-menunggu {
+      background: #fff6db;
+      color: #8a6500;
+    }
+
+    .status-disetujui {
+      background: #eaf8f0;
+      color: #18734e;
+    }
+
+    .status-ditolak {
+      background: #fdeceb;
+      color: #a52c24;
+    }
+
+    .status-dikembalikan {
+      background: #edf3f7;
+      color: #4b687d;
+    }
+
+
+    /* =====================================================
+       TABLE INVENTARIS
+       ===================================================== */
+
+    .inventaris-table-card {
+      overflow: hidden;
+    }
+
+    .table-card-head-custom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 18px 20px;
+    }
+
+    .table-title {
+      margin: 0;
+      font-size: .98rem;
+      font-weight: 700;
+    }
+
+    .table-subtitle {
+      margin-top: 3px;
+      font-size: .75rem;
+      color: var(--ink-500);
+    }
+
+    .search-inventaris {
+      width: 230px;
+      max-width: 100%;
+    }
+
+
+    /* =====================================================
+       PAGINATION INVENTARIS
+       ===================================================== */
+
+    .pegawai-inv-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .pegawai-inv-pagination {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .pegawai-inv-pagination button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+
+    /* =====================================================
+       MODAL
+       ===================================================== */
+
+    .modal-box-pengajuan {
+      width: min(680px, calc(100vw - 30px));
+      max-width: 680px;
+    }
+
+    .modal-pengajuan-subtitle {
+      margin-top: 4px;
+      font-size: .77rem;
+      color: var(--ink-500);
+    }
+
+    .form-section-title {
+      margin: 0 0 8px;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--ink-700);
+    }
+
+    .barang-pengajuan {
+      margin-bottom: 10px;
+      padding: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background: #faf9f6;
+    }
+
+    .barang-pengajuan-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 100px 38px;
+      gap: 9px;
+      align-items: start;
+    }
+
+    .barang-pengajuan .input {
+      width: 100%;
+    }
+
+    .stok-info {
+      margin-top: 5px;
+      font-size: .7rem;
+      color: var(--ink-500);
+    }
+
+    .btn-hapus-barang {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      font-size: 1.2rem;
+    }
+
+    .btn-tambah-barang {
+      margin-top: 2px;
+    }
+
+    .pengajuan-note {
+      margin-top: 15px;
+      padding: 11px 13px;
+      border-radius: 9px;
+      background: #f7f4ec;
+      color: var(--ink-600);
+      font-size: .75rem;
+      line-height: 1.5;
+    }
+
+    .pengajuan-note strong {
+      color: var(--ink-800);
+    }
+
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media (max-width: 760px) {
+
+      .inventaris-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-ajukan {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .table-card-head-custom {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-inventaris {
+        width: 100%;
+      }
+
+      .pengajuan-top {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .pengajuan-info {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      .pengajuan-info-label {
+        margin-top: 7px;
+      }
+
+      .barang-pengajuan-grid {
+        grid-template-columns: minmax(0, 1fr) 85px 38px;
+      }
+
+      .pegawai-inv-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .pegawai-inv-pagination {
+        width: 100%;
+      }
+
+      .pegawai-inv-pagination button {
+        flex: 1;
+      }
+
+    }
+
+
+    @media (max-width: 480px) {
+
+      .pengajuan-card-header,
+      .pengajuan-list,
+      .table-card-head-custom {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .barang-pengajuan-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-hapus-barang {
+        width: 100%;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       NAVBAR
+       ===================================================== -->
+
+  <nav class="pegawai-nav">
+
+    <div class="left">
+
+      <div
+        class="seal-ring"
+        style="
+          width:38px;
+          height:38px;
+          background:rgba(0,0,0,.2);
+        ">
+
+        <img
+          src="../assets/images/logo-kip.png"
+          alt="Lambang KIP"
+          style="
+            width:22px;
+            height:22px;
+          ">
+
+      </div>
+
+      <div>
+        <div class="name">SIPIN</div>
+        <div class="org">KIP Aceh Tamiang</div>
+      </div>
+
+    </div>
+
+
+    <div class="links">
+
+      <a href="dashboard.html">
+        Dashboard
+      </a>
+
+      <a
+        href="inventaris.html"
+        class="active">
+
+        Daftar Inventaris
+
+      </a>
+
+      <a href="profil.html">
+        Profil
+      </a>
+
+    </div>
+
+
+    <div
+      style="
+        display:flex;
+        align-items:center;
+        gap:.5rem;
+      ">
+
+      <button
+        class="btn btn-icon nav-logout-desktop"
+        data-logout
+        aria-label="Keluar"
+        title="Keluar"
+        style="
+          background:rgba(255,255,255,.1);
+          border-color:rgba(255,255,255,.2);
+          color:#fff;
+        ">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          width="17"
+          height="17">
+
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <path d="M16 17l5-5-5-5"/>
+          <path d="M21 12H9"/>
+
+        </svg>
+
+      </button>
+
+
+      <button
+        class="btn btn-icon menu-toggle"
+        data-menu-toggle
+        aria-label="Menu"
+        style="
+          background:rgba(255,255,255,.1);
+          border-color:rgba(255,255,255,.2);
+          color:#fff;
+        ">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          width="18"
+          height="18">
+
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+
+        </svg>
+
+      </button>
+
+    </div>
+
+  </nav>
+
+
+  <!-- =====================================================
+       MOBILE NAV
+       ===================================================== -->
+
+  <div
+    class="pegawai-nav-mobile"
+    data-mobile-menu>
+
+    <a href="dashboard.html">
+      Dashboard
+    </a>
+
+    <a
+      href="inventaris.html"
+      class="active">
+
+      Daftar Inventaris
+
+    </a>
+
+    <a href="profil.html">
+      Profil
+    </a>
+
+    <a
+      href="#"
+      data-logout
+      style="color:#F8E7E5;">
+
+      Keluar
+
+    </a>
+
+  </div>
+
+
+  <!-- =====================================================
+       MAIN
+       ===================================================== -->
+
+  <main
+    class="content inventaris-page">
+
+
+    <!-- ===================================================
+         HEADER
+         =================================================== -->
+
+    <div class="inventaris-header">
+
+      <div class="inventaris-header-text">
+
+        <h1>
+          Daftar Inventaris
+        </h1>
+
+        <p>
+          Lihat barang yang tersedia dan ajukan peminjaman
+          kepada Admin Logistik.
+        </p>
+
+      </div>
+
+
+      <button
+        class="btn btn-gold btn-ajukan"
+        id="btn-ajukan-peminjaman">
+
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          width="16"
+          height="16">
+
+          <path d="M12 5v14"/>
+          <path d="M5 12h14"/>
+
+        </svg>
+
+        Ajukan Peminjaman
+
+      </button>
+
+    </div>
+
+
+    <!-- ===================================================
+         PENGAJUAN SAYA
+         =================================================== -->
+
+    <div class="card pengajuan-card">
+
+      <div class="pengajuan-card-header">
+
+        <div>
+
+          <h3 class="pengajuan-card-title">
+            Pengajuan Saya
+          </h3>
+
+          <p class="pengajuan-card-subtitle">
+            Pantau status pengajuan peminjaman barang Anda.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="daftar-pengajuan-saya"
+        class="pengajuan-list">
+
+        <div class="pengajuan-empty">
+          Memuat pengajuan…
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         INVENTARIS
+         =================================================== -->
+
+    <div class="card inventaris-table-card">
+
+      <div class="table-card-head-custom">
+
+        <div>
+
+          <h3
+            id="judul-jumlah"
+            class="table-title">
+
+            Memuat…
+
+          </h3>
+
+          <div class="table-subtitle">
+            Daftar barang inventaris yang tersedia.
+          </div>
+
+        </div>
+
+
+        <input
+          class="input search-inventaris"
+          data-table-search="tabel-inv-pegawai"
+          placeholder="Cari nama barang…">
+
+      </div>
+
+
+      <div class="table-wrap">
+
+        <table id="tabel-inv-pegawai">
+
+          <thead>
+
+            <tr>
+
+              <th>Kode</th>
+
+              <th>Nama Barang</th>
+
+              <th>Merk</th>
+
+              <th>Total</th>
+
+              <th>Tersedia</th>
+
+              <th>Status</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody></tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- PAGINATION -->
+
+      <div class="table-foot pegawai-inv-footer">
+
+        <span id="footer-inv-pegawai">
+          Memuat data…
+        </span>
+
+        <div class="pegawai-inv-pagination">
+
+          <button
+            class="btn btn-ghost btn-sm"
+            id="btn-prev-inv-pegawai"
+            type="button"
+            disabled>
+
+            Sebelumnya
+
+          </button>
+
+          <button
+            class="btn btn-ghost btn-sm"
+            id="btn-next-inv-pegawai"
+            type="button"
+            disabled>
+
+            Berikutnya
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </main>
+
+
+  <!-- =====================================================
+       MODAL PENGAJUAN
+       ===================================================== -->
+
+  <div
+    class="modal-overlay"
+    id="modal-pengajuan">
+
+    <div class="modal-box modal-box-pengajuan">
+
+
+      <!-- HEADER -->
+
+      <div class="modal-head">
+
+        <div>
+
+          <h3>
+            Ajukan Peminjaman
+          </h3>
+
+          <div class="modal-pengajuan-subtitle">
+            Isi data peminjaman dengan lengkap.
+          </div>
+
+        </div>
+
+
+        <button
+          class="modal-close"
+          id="btn-tutup-modal"
+          type="button">
+
+          &times;
+
+        </button>
+
+      </div>
+
+
+      <!-- BODY -->
+
+      <div class="modal-body">
+
+
+        <!-- TANGGAL -->
+
+        <div class="field">
+
+          <label>
+            Tanggal Peminjaman
+          </label>
+
+          <input
+            class="input"
+            type="date"
+            id="f-tanggal-pengajuan">
+
+        </div>
+
+
+        <!-- KEPERLUAN -->
+
+        <div class="field">
+
+          <label>
+            Keperluan / Tujuan
+          </label>
+
+          <textarea
+            class="input"
+            id="f-keperluan-pengajuan"
+            rows="3"
+            placeholder="Contoh: untuk rapat koordinasi, kegiatan kedinasan, dan sebagainya."></textarea>
+
+        </div>
+
+
+        <!-- BARANG -->
+
+        <div>
+
+          <div class="form-section-title">
+            Barang yang Ingin Dipinjam
+          </div>
+
+
+          <div
+            id="daftar-barang-pengajuan">
+          </div>
+
+
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm btn-tambah-barang"
+            id="btn-tambah-barang">
+
+            + Tambah Barang
+
+          </button>
+
+        </div>
+
+
+        <!-- CATATAN -->
+
+        <div class="pengajuan-note">
+
+          <strong>Catatan:</strong>
+          Pengajuan tidak langsung mengurangi stok.
+          Admin Logistik akan memeriksa dan menyetujui
+          pengajuan terlebih dahulu.
+
+        </div>
+
+      </div>
+
+
+      <!-- FOOTER -->
+
+      <div class="modal-foot">
+
+        <button
+          class="btn btn-ghost"
+          id="btn-batal-pengajuan"
+          type="button">
+
+          Batal
+
+        </button>
+
+
+        <button
+          class="btn btn-primary"
+          id="btn-kirim-pengajuan"
+          type="button">
+
+          Kirim Pengajuan
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- TOAST -->
+
+  <div
+    id="toast-root"
+    class="toast-stack">
+  </div>
+
+
+  <!-- SCRIPT -->
+
+  <script
+    type="module"
+    src="../js/config.js">
+  </script>
+
+  <script
+    type="module"
+    src="../js/supabase.js">
+  </script>
+
+  <script
+    type="module"
+    src="../js/auth/auth-guard.js">
+  </script>
+
+  <script
+    src="../js/components/navbar.js">
+  </script>
+
+  <script
+    src="../js/components/notification.js">
+  </script>
+
+  <script
+    src="../js/components/logout.js">
+  </script>
+
+  <script
+    type="module"
+    src="../js/pegawai/inventaris.js">
+  </script>
+
+</body>
+</html>

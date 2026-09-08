@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — SIPIN KIP Aceh Tamiang</title>
+<link rel="icon" type="image/png" href="../assets/images/favicon-32.png">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/table.css">
+<link rel="stylesheet" href="../css/form.css">
+<link rel="stylesheet" href="../css/modal.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<link rel="stylesheet" href="../css/animations.css">
+
+<style>
+  /* Pagination Barang Tersedia */
+  .tersedia-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .8rem 1.2rem;
+    border-top: 1px solid var(--border);
+    font-size: .78rem;
+    color: var(--ink-500);
+  }
+
+  .tersedia-pagination {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+
+  .tersedia-pagination button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 600px) {
+    .tersedia-footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .tersedia-pagination {
+      width: 100%;
+    }
+
+    .tersedia-pagination button {
+      flex: 1;
+    }
+  }
+</style>
+
+</head>
+<body>
+
+<nav class="pegawai-nav">
+  <div class="left">
+    <div class="seal-ring" style="width:38px; height:38px; background:rgba(0,0,0,.2);">
+      <img src="../assets/images/logo-kip.png" alt="Lambang KIP" style="width:22px; height:22px;">
+    </div>
+
+    <div>
+      <div class="name">SIPIN</div>
+      <div class="org">KIP Aceh Tamiang</div>
+    </div>
+  </div>
+
+  <div class="links">
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="inventaris.html">Daftar Inventaris</a>
+    <a href="profil.html">Profil</a>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:.5rem;">
+    <button
+      class="btn btn-icon nav-logout-desktop"
+      data-logout
+      aria-label="Keluar"
+      title="Keluar"
+      style="background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.2); color:#fff;"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <path d="M16 17l5-5-5-5"/>
+        <path d="M21 12H9"/>
+      </svg>
+    </button>
+
+    <button
+      class="btn btn-icon menu-toggle"
+      data-menu-toggle
+      aria-label="Menu"
+      style="background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.2); color:#fff;"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+        <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<div class="pegawai-nav-mobile" data-mobile-menu>
+  <a href="dashboard.html" class="active">Dashboard</a>
+  <a href="inventaris.html">Daftar Inventaris</a>
+  <a href="profil.html">Profil</a>
+  <a href="#" data-logout style="color:#F8E7E5;">Keluar</a>
+</div>
+
+<main class="content" style="max-width:1120px; margin:0 auto;">
+
+  <div class="hero-banner dash-in dash-in-1">
+    <div>
+      <h2 id="teks-sambutan">Selamat datang</h2>
+      <p>
+        Berikut informasi inventaris kantor terkini.
+        Ingin meminjam barang? Silakan hubungi atau datang langsung ke Admin Logistik.
+      </p>
+    </div>
+
+    <div
+      class="seal-ring"
+      style="width:72px; height:72px; background:rgba(0,0,0,.15);"
+    >
+      <img
+        src="../assets/images/logo-kip.png"
+        alt="Lambang KIP"
+        style="width:42px; height:42px;"
+      >
+    </div>
+  </div>
+
+  <div class="tile-grid">
+
+    <div class="card tile dash-in dash-in-2">
+      <div class="value" id="stat-total">0</div>
+      <div class="label">Total Inventaris Kantor</div>
+    </div>
+
+    <div class="card tile dash-in dash-in-3">
+      <div class="value" id="stat-tersedia">0</div>
+      <div class="label">Barang Tersedia</div>
+    </div>
+
+    <div class="card tile dash-in dash-in-4">
+      <div class="value" id="stat-dipinjam">0</div>
+      <div class="label">Sedang Dipinjam</div>
+    </div>
+
+  </div>
+
+  <div class="grid-2">
+
+    <!-- BARANG TERSEDIA -->
+    <div class="card table-card dash-in dash-in-5">
+
+      <div class="table-card-head">
+        <h3>Barang Tersedia</h3>
+        <a href="inventaris.html" class="btn btn-ghost btn-sm">
+          Lihat semua
+        </a>
+      </div>
+
+      <div class="table-wrap">
+        <table class="dash-table-animate">
+          <thead>
+            <tr>
+              <th>Nama Barang</th>
+              <th>Tersedia</th>
+            </tr>
+          </thead>
+
+          <tbody id="tabel-tersedia"></tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="tersedia-footer">
+        <span id="footer-tersedia-text">
+          Menampilkan 0 dari 0 barang
+        </span>
+
+        <div class="tersedia-pagination">
+          <button
+            class="btn btn-ghost btn-sm"
+            id="btn-prev-tersedia"
+            type="button"
+            disabled
+          >
+            Sebelumnya
+          </button>
+
+          <button
+            class="btn btn-ghost btn-sm"
+            id="btn-next-tersedia"
+            type="button"
+            disabled
+          >
+            Berikutnya
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SEDANG SAYA PINJAM -->
+    <div class="card table-card dash-in dash-in-6">
+
+      <div class="table-card-head">
+        <h3>Sedang Saya Pinjam</h3>
+      </div>
+
+      <div class="table-wrap">
+        <table class="dash-table-animate">
+          <thead>
+            <tr>
+              <th>Nama Barang</th>
+              <th>Jumlah</th>
+              <th>No. BAST</th>
+            </tr>
+          </thead>
+
+          <tbody id="tabel-pinjaman-saya"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+<div id="toast-root" class="toast-stack"></div>
+
+<script type="module" src="../js/config.js"></script>
+<script type="module" src="../js/supabase.js"></script>
+<script type="module" src="../js/auth/auth-guard.js"></script>
+<script src="../js/components/navbar.js"></script>
+<script src="../js/components/notification.js"></script>
+<script src="../js/components/logout.js"></script>
+<script type="module" src="../js/pegawai/dashboard.js"></script>
+<script src="../js/components/count-up.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+/* ==========================================================================
+   animations.css — animasi khusus halaman Dashboard (admin/dashboard.html
+   dan pegawai/dashboard.html). Dimuat hanya di dua halaman itu supaya
+   halaman lain tetap statis seperti semula.
+   ========================================================================== */
+
+@keyframes dash-fade-up{
+  from{ opacity:0; transform:translateY(14px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+@keyframes dash-scale-in{
+  from{ opacity:0; transform:scale(.94); }
+  to{ opacity:1; transform:scale(1); }
+}
+@keyframes dash-ring-pulse{
+  0%, 100%{ opacity:.55; transform:scale(1); }
+  50%{ opacity:.9; transform:scale(1.04); }
+}
+@keyframes dash-shimmer{
+  0%{ background-position:-200px 0; }
+  100%{ background-position:200px 0; }
+}
+
+/* Elemen yang muncul bertahap saat halaman dimuat */
+.dash-in{
+  opacity:0;
+  animation:dash-fade-up .55s cubic-bezier(.16,.8,.3,1) forwards;
+}
+.dash-in-1{ animation-delay:.02s; }
+.dash-in-2{ animation-delay:.09s; }
+.dash-in-3{ animation-delay:.16s; }
+.dash-in-4{ animation-delay:.23s; }
+.dash-in-5{ animation-delay:.3s; }
+.dash-in-6{ animation-delay:.37s; }
+
+/* Kartu statistik & tile: sedikit terangkat + bayangan membesar saat hover */
+.stat-grid .stat-card,
+.tile-grid .tile{
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.stat-grid .stat-card:hover,
+.tile-grid .tile:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--shadow-md);
+}
+
+/* Ikon di dalam kartu statistik: sedikit membesar saat kartunya di-hover */
+.stat-card .icon-badge{ transition:transform .25s ease, background .25s ease; }
+.stat-card:hover .icon-badge{ transform:scale(1.1) rotate(-4deg); }
+
+/* Cincin dekoratif pada hero banner pegawai: berdenyut halus, bukan diam */
+.hero-banner::after{
+  animation:dash-ring-pulse 4.5s ease-in-out infinite;
+}
+
+/* Lambang/seal di hero banner & login: transisi masuk lembut */
+.hero-banner .seal-ring{
+  animation:dash-scale-in .5s cubic-bezier(.16,.8,.3,1) .1s backwards;
+}
+
+/* Baris tabel pada dashboard: fade-up berurutan */
+.dash-table-animate tbody tr{
+  opacity:0;
+  animation:dash-fade-up .4s ease forwards;
+}
+.dash-table-animate tbody tr:nth-child(1){ animation-delay:.05s; }
+.dash-table-animate tbody tr:nth-child(2){ animation-delay:.11s; }
+.dash-table-animate tbody tr:nth-child(3){ animation-delay:.17s; }
+.dash-table-animate tbody tr:nth-child(4){ animation-delay:.23s; }
+.dash-table-animate tbody tr:nth-child(5){ animation-delay:.29s; }
+
+/* Tombol utama pada dashboard: transisi tekan lebih hidup */
+.dash-in .btn, .tile-grid + * .btn{ transition:transform .15s ease, box-shadow .15s ease, background .15s ease; }
+
+/* Angka statistik yang dihitung naik oleh js/components/count-up.js */
+.stat-card .value, .tile .value{
+  font-variant-numeric:tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .dash-in, .dash-table-animate tbody tr, .hero-banner .seal-ring{ animation:none !important; opacity:1 !important; transform:none !important; }
+  .hero-banner::after{ animation:none !important; }
+}

@@ -1,0 +1,273 @@
+/* ==========================================================================
+   table.css — kartu tabel, tabel data, tools pencarian/filter
+   ========================================================================== */
+
+.table-card{ padding:0; overflow:hidden; }
+.table-card-head{ display:flex; align-items:center; justify-content:space-between; padding:1.2rem 1.4rem; flex-wrap:wrap; gap:.8rem; }
+.table-card-head h3{ font-size:1.05rem; }
+.table-tools{ display:flex; gap:.6rem; flex-wrap:wrap; }
+.table-tools .input{ width:240px; }
+.table-tools select.input{ width:170px; flex-shrink:0; }
+.table-wrap{ overflow-x:auto; }
+table{ width:100%; border-collapse:collapse; font-size:.88rem; }
+thead th{
+  text-align:left; padding:.75rem 1.1rem;
+  background:var(--cream-100);
+  color:var(--ink-700); font-weight:700; font-size:.74rem;
+  text-transform:uppercase; letter-spacing:.04em;
+  border-bottom:1px solid var(--line-soft); white-space:nowrap;
+}
+tbody td{ padding:.9rem 1.1rem; border-bottom:1px solid var(--line-soft); vertical-align:middle; }
+tbody td.nowrap{ white-space:nowrap; }
+tbody tr:last-child td{ border-bottom:none; }
+tbody tr:hover{ background:var(--cream-50); }
+td.strong{ font-weight:700; color:var(--ink-900); }
+td .muted{ color:var(--ink-500); font-size:.82rem; }
+.row-actions{ display:flex; gap:.4rem; }
+.table-foot{ display:flex; align-items:center; justify-content:space-between; padding:1rem 1.4rem; font-size:.82rem; color:var(--ink-500); }
+
+/* ---------- Tabel di dalam dokumen cetak (laporan / BAST) ---------- */
+.print-table{ width:100%; border-collapse:collapse; font-size:.86rem; }
+.print-table th, .print-table td{ border:1px solid var(--ink-900); padding:.5rem .7rem; text-align:left; }
+.print-table th{ background:var(--cream-100); font-size:.74rem; text-transform:uppercase; }
+
+/* =========================================================
+   RIWAYAT
+   ========================================================= */
+
+#tabel-riwayat {
+  width: 100%;
+  min-width: 1100px;
+  table-layout: fixed;
+}
+
+/* Semua isi tabel */
+#tabel-riwayat th,
+#tabel-riwayat td {
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------
+   KOLOM NO. BAST
+   --------------------------------------------------------- */
+
+#tabel-riwayat th:nth-child(1),
+#tabel-riwayat td:nth-child(1) {
+  width: 185px;
+}
+
+/* ---------------------------------------------------------
+   KOLOM PEGAWAI
+   --------------------------------------------------------- */
+
+#tabel-riwayat th:nth-child(2),
+#tabel-riwayat td:nth-child(2) {
+  width: 190px;
+}
+
+/* ---------------------------------------------------------
+   KOLOM BARANG
+   --------------------------------------------------------- */
+
+#tabel-riwayat th:nth-child(3),
+#tabel-riwayat td:nth-child(3) {
+  width: 220px;
+}
+
+/* ---------------------------------------------------------
+   TANGGAL PINJAM
+   --------------------------------------------------------- */
+
+#tabel-riwayat th:nth-child(4),
+#tabel-riwayat td:nth-child(4) {
+  width: 125px;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------
+   TANGGAL KEMBALI
+   --------------------------------------------------------- */
+
+#tabel-riwayat th:nth-child(5),
+#tabel-riwayat td:nth-child(5) {
+  width: 125px;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------
+   KONDISI
+   --------------------------------------------------------- */
+
+#tabel-riwayat th:nth-child(6),
+#tabel-riwayat td:nth-child(6) {
+  width: 255px;
+}
+
+/* ---------------------------------------------------------
+   ISI TABEL
+   --------------------------------------------------------- */
+
+#tabel-riwayat tbody td {
+  padding-top: .85rem;
+  padding-bottom: .85rem;
+}
+
+/* ---------------------------------------------------------
+   NO. BAST
+   --------------------------------------------------------- */
+
+/*
+   Jangan gunakan white-space: nowrap.
+   No. BAST yang panjang boleh turun menjadi 2 baris
+   sehingga tidak menabrak kolom Pegawai.
+*/
+
+#tabel-riwayat .riwayat-bast {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+/* ---------------------------------------------------------
+   PEGAWAI
+   --------------------------------------------------------- */
+
+#tabel-riwayat .riwayat-pegawai {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+/* ---------------------------------------------------------
+   BARANG
+   --------------------------------------------------------- */
+
+#tabel-riwayat .riwayat-barang {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+/* ---------------------------------------------------------
+   TANGGAL
+   --------------------------------------------------------- */
+
+#tabel-riwayat .riwayat-tanggal {
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------
+   KONDISI
+   --------------------------------------------------------- */
+
+#tabel-riwayat .riwayat-kondisi {
+  vertical-align: top;
+}
+
+/* ---------------------------------------------------------
+   LIST KONDISI
+   --------------------------------------------------------- */
+
+.riwayat-kondisi-list {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+
+/* ---------------------------------------------------------
+   SATU UNIT
+   --------------------------------------------------------- */
+
+.riwayat-kondisi-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 27px;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+/* ---------------------------------------------------------
+   KODE UNIT
+   --------------------------------------------------------- */
+
+.riwayat-unit {
+  display: inline-flex;
+  align-items: center;
+
+  width: 90px;
+  min-width: 90px;
+
+  font-size: .76rem;
+  color: var(--ink-500);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------------------------------------------------
+   BADGE KONDISI
+   --------------------------------------------------------- */
+
+.riwayat-kondisi-item .badge {
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------
+   FOOTER
+   --------------------------------------------------------- */
+
+.riwayat-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* ---------------------------------------------------------
+   PAGINATION
+   --------------------------------------------------------- */
+
+.riwayat-pagination {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.riwayat-pagination button {
+  white-space: nowrap;
+}
+
+.riwayat-pagination button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 700px) {
+
+  .riwayat-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .riwayat-pagination {
+    width: 100%;
+  }
+
+  .riwayat-pagination button {
+    flex: 1;
+  }
+
+}
