@@ -1,0 +1,94 @@
+/* ==========================================================================
+   login.css — layout autentikasi (login, register, menunggu-konfirmasi)
+   Panel identitas formal + panel form
+   ========================================================================== */
+
+.auth-shell{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1.05fr 1fr;
+}
+.auth-brand{
+  position:relative;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(243,217,67,.08), transparent 40%),
+    linear-gradient(160deg, var(--maroon-800) 0%, var(--maroon-900) 65%, #2A0403 100%);
+  color:var(--white);
+  padding:3.2rem 3.4rem;
+  display:flex; flex-direction:column; justify-content:space-between;
+  overflow:hidden;
+}
+.auth-brand::before{
+  content:'';
+  position:absolute; inset:0;
+  background-image:radial-gradient(circle, rgba(243,217,67,.18) 1.4px, transparent 1.4px);
+  background-size:26px 26px;
+  opacity:.5;
+  pointer-events:none;
+}
+.auth-brand::after{
+  content:'';
+  position:absolute; right:-140px; top:-140px;
+  width:420px; height:420px; border-radius:50%;
+  border:1.5px dashed rgba(243,217,67,.28);
+}
+.auth-brand-top{ position:relative; z-index:1; display:flex; align-items:center; gap:.9rem; }
+.auth-brand-top .org{ font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-500); font-weight:700; }
+.auth-brand-top .org small{ display:block; color:rgba(255,255,255,.65); font-weight:600; letter-spacing:.04em; margin-top:.15rem; }
+
+.auth-brand-mid{ position:relative; z-index:1; max-width:460px; }
+.auth-brand-mid .eyebrow{
+  font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold-500); margin-bottom:1rem; display:block;
+}
+.auth-brand-mid h1{
+  font-size:2.6rem; line-height:1.12; color:var(--white); font-weight:600;
+}
+.auth-brand-mid p{
+  margin-top:1.1rem; color:rgba(255,255,255,.72); font-size:1rem; line-height:1.65; max-width:400px;
+}
+.auth-stats{ position:relative; z-index:1; display:flex; gap:2.2rem; }
+.auth-stats div b{ display:block; font-family:var(--font-display); font-size:1.5rem; color:var(--gold-500); }
+.auth-stats div span{ font-size:.78rem; color:rgba(255,255,255,.6); }
+.auth-brand-foot{ position:relative; z-index:1; font-size:.78rem; color:rgba(255,255,255,.5); }
+
+.auth-form-side{
+  display:flex; align-items:center; justify-content:center;
+  padding:3rem 2.5rem;
+  background:var(--cream-50);
+}
+.auth-form-box{ width:100%; max-width:400px; }
+.auth-form-box .kicker{ font-size:.82rem; font-weight:700; color:var(--maroon-700); letter-spacing:.03em; text-transform:uppercase; margin-bottom:.6rem; display:block; }
+.auth-form-box h2{ font-size:1.9rem; color:var(--ink-900); margin-bottom:.4rem; }
+.auth-form-box .sub{ color:var(--ink-500); font-size:.92rem; margin-bottom:2rem; display:block; }
+.auth-form-box .switch{ margin-top:1.6rem; text-align:center; font-size:.88rem; color:var(--ink-500); }
+.auth-form-box .switch a{ color:var(--maroon-700); font-weight:700; }
+.auth-divider{ display:flex; align-items:center; gap:.8rem; margin:1.6rem 0; color:var(--ink-500); font-size:.78rem; }
+.auth-divider .dot-divider{ flex:1; }
+.status-pill{
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:var(--warn-bg); color:var(--warn-fg);
+  padding:.5rem .9rem; border-radius:999px; font-size:.82rem; font-weight:700;
+}
+
+/* ---------- Halaman menunggu konfirmasi (kartu tengah, tanpa panel kiri) ---------- */
+.waiting-shell{
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background:var(--cream-50); padding:2rem;
+}
+.waiting-card{
+  max-width:440px; width:100%; text-align:center;
+  padding:2.6rem 2.2rem;
+}
+.waiting-card .seal-ring{ width:76px; height:76px; margin:0 auto 1.4rem; background:var(--cream-100); }
+.waiting-card .seal-ring::before{ border-color:var(--gold-700); }
+.waiting-card .seal-ring img{ width:44px; height:44px; }
+.waiting-card h2{ font-size:1.5rem; margin-bottom:.6rem; }
+.waiting-card p{ color:var(--ink-500); font-size:.92rem; line-height:1.6; margin-bottom:1.6rem; }
+
+@media (max-width: 920px){
+  .auth-shell{ grid-template-columns:1fr; }
+  .auth-brand{ padding:2.2rem; min-height:280px; }
+  .auth-brand-mid h1{ font-size:1.9rem; }
+  .auth-stats{ display:none; }
+}

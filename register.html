@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="assets/images/favicon-32.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daftar Pegawai — SIPIN KIP Aceh Tamiang</title>
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/form.css">
+<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<div class="auth-shell">
+  <aside class="auth-brand">
+    <div class="auth-brand-top">
+      <div class="seal-ring"><img src="assets/images/logo-kip.png" alt="Lambang KIP"></div>
+      <div class="org">Komisi Independen Pemilihan<small>Kabupaten Aceh Tamiang</small></div>
+    </div>
+
+    <div class="auth-brand-mid">
+      <span class="eyebrow">Registrasi Pegawai</span>
+      <h1>Satu akun untuk memantau seluruh inventaris kantor.</h1>
+      <p>Setelah mendaftar, akun Anda menunggu konfirmasi Admin sebelum dapat digunakan untuk masuk.</p>
+    </div>
+
+    <div>
+      <div class="dot-divider" style="background-color:rgba(255,255,255,.15); margin-bottom:1.4rem;"></div>
+      <p class="auth-brand-foot">Butuh meminjam barang? Pegawai tetap mengajukan langsung kepada Admin — pengajuan tidak dilakukan melalui website ini.</p>
+    </div>
+  </aside>
+
+  <section class="auth-form-side">
+    <div class="auth-form-box">
+      <span class="kicker">Daftar</span>
+      <h2>Buat akun Pegawai</h2>
+      <span class="sub">Lengkapi data berikut sesuai identitas kepegawaian Anda.</span>
+
+      <form id="form-register">
+        <div id="register-alert"></div>
+        <div class="field"><label for="nama">Nama Lengkap</label><input class="input" type="text" id="nama" name="nama" placeholder="Nama sesuai identitas kepegawaian" required></div>
+        <div class="field"><label for="nip">NIP</label><input class="input" type="text" id="nip" name="nip" placeholder="Nomor Induk Pegawai" required></div>
+        <div class="field"><label for="jabatan">Jabatan</label><input class="input" type="text" id="jabatan" name="jabatan" placeholder="Contoh: Staf Bagian Umum" required></div>
+        <div class="field"><label for="remail">Email</label><input class="input" type="email" id="remail" name="email" placeholder="nama@acehtamiang.kpu.go.id" required></div>
+        <div class="field"><label for="rpass">Kata Sandi</label><input class="input" type="password" id="rpass" name="password" placeholder="Minimal 8 karakter" required minlength="8"></div>
+
+        <button class="btn btn-primary btn-block" type="submit" id="btn-register">Daftar &amp; Tunggu Konfirmasi</button>
+      </form>
+
+      <p class="switch">Sudah mempunyai akun? <a href="login.html">Masuk di sini</a></p>
+    </div>
+  </section>
+</div>
+
+<script type="module" src="js/config.js"></script>
+<script type="module" src="js/supabase.js"></script>
+<script type="module" src="js/auth/register.js"></script>
+</body>
+</html>

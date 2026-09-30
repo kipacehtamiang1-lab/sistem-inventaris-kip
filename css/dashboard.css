@@ -1,0 +1,190 @@
+/* ==========================================================================
+   dashboard.css — app shell: sidebar admin, topbar, stat card, hero pegawai
+   ========================================================================== */
+
+.app-shell{ display:flex; min-height:100vh; }
+
+.sidebar{
+  width:264px; flex-shrink:0;
+  background:linear-gradient(190deg, var(--maroon-800), var(--maroon-900) 70%);
+  color:var(--white);
+  display:flex; flex-direction:column;
+  position:sticky; top:0; height:100vh;
+  z-index:20;
+}
+.sidebar-brand{
+  display:flex; align-items:center; gap:.8rem;
+  padding:1.5rem 1.4rem 1.3rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.sidebar-brand .seal-ring{ width:44px; height:44px; background:rgba(0,0,0,.18); }
+.sidebar-brand .seal-ring img{ width:26px; height:26px; }
+.sidebar-brand .name{ font-family:var(--font-display); font-size:1.15rem; color:var(--white); line-height:1.1; }
+.sidebar-brand .org{ font-size:.7rem; color:rgba(255,255,255,.55); font-weight:600; letter-spacing:.03em; margin-top:.15rem; }
+
+.sidebar-nav{ padding:1.1rem .9rem; flex:1; overflow-y:auto; }
+.sidebar-section{ font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.4); margin:1.1rem .5rem .5rem; }
+.sidebar-nav a{
+  display:flex; align-items:center; gap:.75rem;
+  padding:.65rem .8rem; margin-bottom:.15rem;
+  border-radius:9px;
+  font-size:.87rem; font-weight:600;
+  color:rgba(255,255,255,.72);
+  border-left:3px solid transparent;
+  transition:background .15s ease, color .15s ease;
+}
+.sidebar-nav a svg{ width:18px; height:18px; flex-shrink:0; opacity:.85; }
+.sidebar-nav a:hover{ background:rgba(255,255,255,.06); color:var(--white); }
+.sidebar-nav a.active{
+  background:rgba(243,217,67,.12);
+  color:var(--gold-500);
+  border-left-color:var(--gold-500);
+}
+.sidebar-foot{
+  padding:1rem 1.4rem 1.3rem; border-top:1px solid rgba(255,255,255,.08);
+  font-size:.74rem; color:rgba(255,255,255,.45);
+}
+
+.main{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.1rem 1.8rem;
+  background:var(--white);
+  border-bottom:1px solid var(--line-soft);
+  position:sticky; top:0; z-index:10;
+}
+.topbar h1{ font-size:1.35rem; color:var(--ink-900); }
+.topbar .path{ font-size:.78rem; color:var(--ink-500); font-weight:600; margin-top:.15rem; }
+.topbar-right{ display:flex; align-items:center; gap:1rem; }
+.menu-toggle{ display:none; }
+.profile-chip{
+  display:flex; align-items:center; gap:.5rem;
+  padding:.4rem .6rem .4rem .9rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  cursor:pointer;
+  position:relative;
+}
+.profile-chip .avatar{
+  width:32px; height:32px; border-radius:50%;
+  background:var(--maroon-700); color:var(--gold-500);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:.8rem; font-family:var(--font-display);
+}
+.profile-chip .info{ line-height:1.2; }
+.profile-chip .info b{ display:block; font-size:.84rem; }
+.profile-chip .info span{ font-size:.72rem; color:var(--ink-500); }
+
+.profile-dropdown{
+  position:absolute; top:calc(100% + 8px); right:0;
+  background:var(--white);
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  box-shadow:var(--shadow-lg);
+  min-width:190px;
+  padding:.4rem;
+  z-index:30;
+  opacity:0; visibility:hidden; transform:translateY(-6px);
+  transition:opacity .15s ease, transform .15s ease, visibility .15s;
+}
+.profile-chip.open .profile-dropdown{ opacity:1; visibility:visible; transform:translateY(0); }
+.profile-dropdown a{
+  display:flex; align-items:center; gap:.6rem;
+  padding:.65rem .75rem; border-radius:8px;
+  font-size:.86rem; font-weight:600; color:var(--ink-700);
+}
+.profile-dropdown a svg{ width:16px; height:16px; opacity:.8; }
+.profile-dropdown a:hover{ background:var(--cream-100); }
+.profile-dropdown a.danger{ color:var(--bad-fg); }
+.profile-dropdown a.danger:hover{ background:var(--bad-bg); }
+
+.content{ padding:1.8rem; flex:1; }
+
+/* ---------- Stat cards ---------- */
+.stat-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:1rem; margin-bottom:1.6rem; }
+.stat-card{
+  padding:1.3rem 1.4rem;
+  border-top:3px solid var(--gold-500);
+  position:relative;
+}
+.stat-card .top-row{ display:flex; align-items:center; justify-content:space-between; }
+.stat-card .icon-badge{
+  width:38px; height:38px; border-radius:10px;
+  background:var(--cream-100); color:var(--maroon-700);
+  display:flex; align-items:center; justify-content:center;
+}
+.stat-card .icon-badge svg{ width:19px; height:19px; }
+.stat-card .label{ font-size:.8rem; color:var(--ink-500); font-weight:600; margin-top:1rem; }
+.stat-card .value{ font-family:var(--font-display); font-size:2.1rem; margin-top:.15rem; color:var(--ink-900); }
+.stat-card .delta{ font-size:.76rem; font-weight:700; margin-top:.4rem; }
+.stat-card .delta.up{ color:var(--ok-fg); }
+.stat-card .delta.down{ color:var(--bad-fg); }
+
+/* ==========================================================================
+   PEGAWAI — navbar sederhana (bukan sidebar), dashboard lebih ringan
+   ========================================================================== */
+.pegawai-nav{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.9rem 2rem;
+  background:linear-gradient(100deg, var(--maroon-800), var(--maroon-700));
+  color:var(--white);
+  position:sticky; top:0; z-index:20;
+}
+.pegawai-nav .left{ display:flex; align-items:center; gap:.9rem; }
+.pegawai-nav .name{ font-family:var(--font-display); font-size:1.05rem; }
+.pegawai-nav .org{ font-size:.68rem; color:rgba(255,255,255,.6); font-weight:600; }
+.pegawai-nav .links{ display:flex; gap:.3rem; }
+.pegawai-nav .links a{
+  padding:.55rem 1rem; border-radius:999px; font-size:.86rem; font-weight:600;
+  color:rgba(255,255,255,.75);
+}
+.pegawai-nav .links a:hover{ background:rgba(255,255,255,.08); color:var(--white); }
+.pegawai-nav .links a.active{ background:var(--gold-500); color:var(--maroon-900); }
+.pegawai-nav .menu-toggle{ color:var(--white); }
+.pegawai-nav-mobile{
+  display:none; flex-direction:column; gap:.2rem;
+  background:var(--maroon-800); padding:.6rem 1rem 1rem;
+}
+.pegawai-nav-mobile.open{ display:flex; }
+.pegawai-nav-mobile a{ padding:.6rem .8rem; border-radius:8px; color:rgba(255,255,255,.8); font-weight:600; font-size:.9rem; }
+.pegawai-nav-mobile a.active{ background:var(--gold-500); color:var(--maroon-900); }
+
+.hero-banner{
+  background:
+    radial-gradient(circle at 90% 10%, rgba(243,217,67,.10), transparent 45%),
+    linear-gradient(120deg, var(--maroon-800), var(--maroon-700));
+  color:var(--white);
+  border-radius:var(--radius-lg);
+  padding:2.1rem 2.3rem;
+  display:flex; align-items:center; justify-content:space-between; gap:1.5rem;
+  margin-bottom:1.6rem;
+  flex-wrap:wrap;
+  position:relative; overflow:hidden;
+}
+.hero-banner::after{
+  content:''; position:absolute; right:-60px; top:-60px; width:220px; height:220px;
+  border-radius:50%; border:1.5px dashed rgba(243,217,67,.3);
+}
+.hero-banner h2{ font-size:1.6rem; color:var(--white); position:relative; z-index:1; }
+.hero-banner p{ color:rgba(255,255,255,.7); margin-top:.5rem; max-width:420px; font-size:.92rem; position:relative; z-index:1; }
+
+.tile-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.6rem; }
+.tile{ padding:1.3rem 1.4rem; text-align:left; }
+.tile .value{ font-family:var(--font-display); font-size:2rem; color:var(--maroon-700); }
+.tile .label{ font-size:.82rem; color:var(--ink-500); font-weight:600; margin-top:.25rem; }
+
+/* ---------- Kartu info profil ---------- */
+.profile-card{ padding:1.8rem; display:flex; gap:1.4rem; align-items:center; margin-bottom:1.6rem; }
+.profile-card .avatar-lg{
+  width:72px; height:72px; border-radius:50%;
+  background:var(--maroon-700); color:var(--gold-500);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-size:1.6rem; flex-shrink:0;
+}
+.profile-card h3{ font-size:1.2rem; }
+.profile-card .role{ color:var(--ink-500); font-size:.86rem; margin-top:.2rem; }
+.info-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.2rem; }
+.info-grid .row{ padding:.9rem 0; border-bottom:1px solid var(--line-soft); }
+.info-grid .row span{ display:block; font-size:.76rem; color:var(--ink-500); font-weight:700; text-transform:uppercase; letter-spacing:.03em; margin-bottom:.3rem; }
+.info-grid .row b{ font-size:.94rem; font-weight:600; }
+
