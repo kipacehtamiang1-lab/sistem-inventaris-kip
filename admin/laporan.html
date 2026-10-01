@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Laporan Bulanan — SIPIN KIP Aceh Tamiang</title>
+
     <link rel="icon" type="image/png" href="../assets/images/favicon-32.png" />
+
     <link rel="stylesheet" href="../css/variables.css" />
     <link rel="stylesheet" href="../css/global.css" />
     <link rel="stylesheet" href="../css/table.css" />
@@ -12,121 +15,540 @@
     <link rel="stylesheet" href="../css/modal.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
     <link rel="stylesheet" href="../css/responsive.css" />
-  <style>
-  @media print {
-    body {
-      margin: 0;
-      background: white;
-    }
 
-    body * {
-      visibility: hidden;
-    }
+    <!-- =====================================================
+         STYLE KHUSUS HALAMAN LAPORAN
+    ====================================================== -->
+    <style>
+      /* =====================================================
+         AREA LAPORAN
+      ====================================================== */
 
-    #area-laporan,
-    #area-laporan * {
-      visibility: visible;
-    }
+      .laporan-page {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
 
-    #area-laporan {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      padding: 20px;
-      box-sizing: border-box;
-    }
+      /* =====================================================
+         HEADER LAPORAN
+      ====================================================== */
 
-    .sidebar,
-    .topbar,
-    .page-head button,
-    .page-head select,
-    #btn-cetak-laporan,
-    #toast-root {
-      display: none !important;
-    }
+      .laporan-page-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
 
-    .card {
-      box-shadow: none !important;
-      border: none !important;
-    }
+      .laporan-page-head h2 {
+        margin: 0;
+        font-size: 1.45rem;
+        color: var(--ink-900);
+      }
 
-    .table-wrap {
-      overflow: visible !important;
-    }
+      .laporan-page-head .desc {
+        margin: 0.3rem 0 0;
+        color: var(--ink-500);
+        font-size: 0.9rem;
+      }
 
-    table {
-      width: 100%;
-    }
-  }
-  /* =========================================================
-   MODE CETAK LAPORAN
-   ========================================================= */
+      .laporan-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
 
-@media print {
-  /* Sembunyikan card statistik */
-  .stat-card {
-    display: none !important;
-  }
+      .laporan-actions .input {
+        min-width: 130px;
+      }
 
-  /* Sembunyikan tombol cetak */
-  .btn.btn-gold {
-    display: none !important;
-  }
+      /* =====================================================
+         STATISTIK
+      ====================================================== */
 
-  /* Sembunyikan sidebar */
-  .sidebar {
-    display: none !important;
-  }
+      .laporan-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+      }
 
-  /* Sembunyikan topbar */
-  .topbar {
-    display: none !important;
-  }
+      .laporan-stat-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 135px;
+        padding: 1.25rem;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+      }
 
-  /* Hilangkan elemen navigasi/yang tidak perlu */
-  .page-head .btn {
-    display: none !important;
-  }
+      .laporan-stat-card::after {
+        content: "";
+        position: absolute;
+        width: 75px;
+        height: 75px;
+        right: -25px;
+        bottom: -25px;
+        border-radius: 50%;
+        background: rgba(184, 134, 11, 0.07);
+      }
 
-  /* Buat area utama memenuhi halaman */
-  .main {
-    margin: 0 !important;
-    width: 100% !important;
-  }
+      .laporan-stat-label {
+        font-size: 0.84rem;
+        color: var(--ink-500);
+        margin-bottom: 0.45rem;
+      }
 
-  .content {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
+      .laporan-stat-value {
+        font-size: 2rem;
+        line-height: 1;
+        font-weight: 700;
+        color: var(--ink-900);
+      }
 
-  /* Tabel laporan tetap ditampilkan */
-  .table-card {
-    display: block !important;
-    width: 100% !important;
-    box-shadow: none !important;
-    border: none !important;
-  }
+      .laporan-stat-info {
+        margin-top: 0.7rem;
+        font-size: 0.78rem;
+        color: var(--ink-500);
+      }
 
-  /* Jangan tampilkan search */
-  .table-tools {
-    display: none !important;
-  }
+      .laporan-stat-info.success {
+        color: #16734a;
+      }
 
-  /* Hilangkan elemen lain yang tidak diperlukan */
-  .no-print {
-    display: none !important;
-  }
-}
-</style>
+      .laporan-stat-info.warning {
+        color: #a66b00;
+      }
+
+      .laporan-stat-info.danger {
+        color: #b42318;
+      }
+
+      /* =====================================================
+         GRAFIK
+      ====================================================== */
+
+      .laporan-chart-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.7fr) minmax(320px, 1fr);
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .laporan-chart-card {
+        min-width: 0;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 14px;
+        padding: 1.25rem;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+      }
+
+      .laporan-chart-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .laporan-chart-title {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--ink-900);
+      }
+
+      .laporan-chart-subtitle {
+        margin: 0.3rem 0 0;
+        font-size: 0.78rem;
+        color: var(--ink-500);
+      }
+
+      .laporan-chart-wrap {
+        position: relative;
+        width: 100%;
+        height: 320px;
+      }
+
+      .laporan-chart-wrap canvas {
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      /* Grafik donut sedikit lebih kecil */
+
+      .laporan-donut-wrap {
+        height: 320px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .laporan-donut-wrap canvas {
+        max-width: 300px;
+        max-height: 300px;
+      }
+
+      /* =====================================================
+         TABEL
+      ====================================================== */
+
+      .laporan-table-card {
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+      }
+
+      .laporan-table-head {
+        padding: 1.2rem 1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .laporan-table-head h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--ink-900);
+      }
+
+      .laporan-table-head p {
+        margin: 0.3rem 0 0;
+        color: var(--ink-500);
+        font-size: 0.8rem;
+      }
+
+      .laporan-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .laporan-table {
+        width: 100%;
+        min-width: 850px;
+        border-collapse: collapse;
+      }
+
+      .laporan-table th {
+        padding: 0.8rem 0.9rem;
+        text-align: left;
+        white-space: nowrap;
+        background: #faf8f3;
+        color: var(--ink-700);
+        font-size: 0.78rem;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+      }
+
+      .laporan-table td {
+        padding: 0.8rem 0.9rem;
+        color: var(--ink-700);
+        font-size: 0.8rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        vertical-align: top;
+      }
+
+      .laporan-table tbody tr:hover {
+        background: #fffcf6;
+      }
+
+      .laporan-empty {
+        text-align: center;
+        padding: 2.5rem 1rem !important;
+        color: var(--ink-500);
+      }
+
+      /* =====================================================
+         BADGE
+      ====================================================== */
+
+      .laporan-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.28rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .laporan-badge.dipinjam {
+        background: #fff4db;
+        color: #8a5a00;
+      }
+
+      .laporan-badge.dikembalikan {
+        background: #eaf7ef;
+        color: #16734a;
+      }
+
+      .laporan-badge.rusak {
+        background: #fff0ed;
+        color: #b42318;
+      }
+
+      .laporan-badge.hilang {
+        background: #f2f2f2;
+        color: #555;
+      }
+
+      /* =====================================================
+   PAGINATION
+====================================================== */
+
+      .laporan-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 1rem 1.25rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        background: #fff;
+      }
+
+      .laporan-pagination-info {
+        color: var(--ink-500);
+        font-size: 0.78rem;
+      }
+
+      .laporan-pagination-info b {
+        color: var(--ink-700);
+      }
+
+      .laporan-pagination-controls {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.45rem;
+        flex-wrap: wrap;
+      }
+
+      .laporan-page-size {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: var(--ink-500);
+        font-size: 0.78rem;
+        margin-right: 0.35rem;
+      }
+
+      .laporan-page-size .input {
+        min-width: 65px;
+        width: 65px;
+        padding: 0.45rem 0.55rem;
+        font-size: 0.78rem;
+      }
+
+      .laporan-page-btn {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        background: #fff;
+        color: var(--ink-700);
+        min-height: 34px;
+        padding: 0.45rem 0.75rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.76rem;
+        transition:
+          background 0.15s ease,
+          border-color 0.15s ease,
+          color 0.15s ease;
+      }
+
+      .laporan-page-btn:hover:not(:disabled) {
+        background: #faf8f3;
+        border-color: rgba(184, 134, 11, 0.35);
+        color: var(--gold-600);
+      }
+
+      .laporan-page-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .laporan-page-number {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .laporan-page-number button {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--ink-700);
+        cursor: pointer;
+        font-size: 0.76rem;
+      }
+
+      .laporan-page-number button:hover {
+        background: #faf8f3;
+        border-color: rgba(184, 134, 11, 0.35);
+      }
+
+      .laporan-page-number button.active {
+        background: var(--gold-500);
+        border-color: var(--gold-500);
+        color: #fff;
+        font-weight: 700;
+      }
+
+      @media (max-width: 650px) {
+        .laporan-pagination {
+          align-items: stretch;
+        }
+
+        .laporan-pagination-info {
+          width: 100%;
+        }
+
+        .laporan-pagination-controls {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .laporan-page-size {
+          width: 100%;
+          margin-right: 0;
+        }
+
+        .laporan-page-btn {
+          flex: 1;
+        }
+
+        .laporan-page-number {
+          order: 3;
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      @media print {
+        .laporan-pagination {
+          display: none !important;
+        }
+      }
+
+      /* =====================================================
+         RESPONSIVE
+      ====================================================== */
+
+      @media (max-width: 1100px) {
+        .laporan-stat-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .laporan-chart-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .laporan-chart-wrap {
+          height: 300px;
+        }
+      }
+
+      @media (max-width: 650px) {
+        .laporan-stat-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .laporan-page-head {
+          align-items: stretch;
+        }
+
+        .laporan-actions {
+          width: 100%;
+        }
+
+        .laporan-actions .input,
+        .laporan-actions .btn {
+          flex: 1;
+        }
+
+        .laporan-chart-card {
+          padding: 1rem;
+        }
+
+        .laporan-chart-wrap {
+          height: 260px;
+        }
+      }
+
+      /* =====================================================
+         PRINT
+      ====================================================== */
+
+      @media print {
+        body {
+          margin: 0 !important;
+          background: #fff !important;
+        }
+
+        .sidebar,
+        .topbar,
+        .laporan-page-head,
+        .laporan-stat-grid,
+        .laporan-chart-grid,
+        #toast-root {
+          display: none !important;
+        }
+
+        .main {
+          margin: 0 !important;
+          width: 100% !important;
+        }
+
+        .content {
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+
+        .laporan-table-card {
+          border: none !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+        }
+
+        .laporan-table-head {
+          padding: 0 0 12px !important;
+        }
+
+        .laporan-table-wrap {
+          overflow: visible !important;
+        }
+
+        .laporan-table {
+          min-width: 0 !important;
+        }
+
+        .laporan-table th,
+        .laporan-table td {
+          font-size: 10px !important;
+          padding: 6px !important;
+        }
+      }
+    </style>
   </head>
+
   <body>
     <div class="app-shell">
+      <!-- =====================================================
+           SIDEBAR
+      ====================================================== -->
+
       <aside class="sidebar">
         <div class="sidebar-brand">
           <div class="seal-ring">
             <img src="../assets/images/logo-kip.png" alt="Lambang KIP" />
           </div>
+
           <div>
             <div class="name">SIPIN</div>
             <div class="org">KIP Aceh Tamiang</div>
@@ -135,6 +557,7 @@
 
         <nav class="sidebar-nav">
           <div class="sidebar-section">Utama</div>
+
           <a href="dashboard.html">
             <svg
               viewBox="0 0 24 24"
@@ -149,6 +572,7 @@
             </svg>
             Dashboard
           </a>
+
           <a href="pegawai.html">
             <svg
               viewBox="0 0 24 24"
@@ -163,7 +587,9 @@
             </svg>
             Manajemen Pegawai
           </a>
+
           <div class="sidebar-section">Inventaris</div>
+
           <a href="inventaris.html">
             <svg
               viewBox="0 0 24 24"
@@ -177,6 +603,7 @@
             </svg>
             Manajemen Inventaris
           </a>
+
           <a href="peminjaman.html">
             <svg
               viewBox="0 0 24 24"
@@ -190,6 +617,7 @@
             </svg>
             Pencatatan Peminjaman
           </a>
+
           <a href="bast.html">
             <svg
               viewBox="0 0 24 24"
@@ -203,6 +631,7 @@
             </svg>
             BAST
           </a>
+
           <a href="pengembalian.html">
             <svg
               viewBox="0 0 24 24"
@@ -215,7 +644,9 @@
             </svg>
             Pengembalian
           </a>
+
           <div class="sidebar-section">Riwayat & Laporan</div>
+
           <a href="riwayat.html">
             <svg
               viewBox="0 0 24 24"
@@ -228,6 +659,7 @@
             </svg>
             Riwayat
           </a>
+
           <a href="laporan.html" class="active">
             <svg
               viewBox="0 0 24 24"
@@ -243,7 +675,9 @@
             </svg>
             Laporan Bulanan
           </a>
+
           <div class="sidebar-section">Pengaturan</div>
+
           <a href="pengaturan-bast.html">
             <svg
               viewBox="0 0 24 24"
@@ -258,6 +692,7 @@
             </svg>
             Pengaturan BAST
           </a>
+
           <a href="profil.html">
             <svg
               viewBox="0 0 24 24"
@@ -273,11 +708,18 @@
         </nav>
 
         <div class="sidebar-foot">
-          Masuk sebagai <b style="color: var(--gold-500)">Admin Logistik</b>
+          Masuk sebagai
+          <b style="color: var(--gold-500)"> Admin Logistik </b>
         </div>
       </aside>
 
+      <!-- =====================================================
+           MAIN
+      ====================================================== -->
+
       <div class="main">
+        <!-- TOPBAR -->
+
         <header class="topbar">
           <div style="display: flex; align-items: center; gap: 0.9rem">
             <button
@@ -296,11 +738,13 @@
                 <path d="M3 6h18M3 12h18M3 18h18" />
               </svg>
             </button>
+
             <div>
               <h1>Laporan Bulanan</h1>
               <div class="path">Rekap aktivitas inventaris per bulan</div>
             </div>
           </div>
+
           <div class="topbar-right">
             <button class="btn btn-icon" aria-label="Notifikasi" id="btn-notif">
               <svg
@@ -315,12 +759,15 @@
                 <path d="M13.7 21a2 2 0 0 1-3.4 0" />
               </svg>
             </button>
+
             <div class="profile-chip" data-profile-toggle>
-              <div class="avatar">FK</div>
+              <div class="avatar">A</div>
+
               <div class="info">
-                <b>Fakhruddin</b>
-                <span>Admin Logistik</span>
+                <b>Admin</b>
+                <span>Admin</span>
               </div>
+
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -334,148 +781,305 @@
               </svg>
 
               <div class="profile-dropdown">
-                <a href="profil.html">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  >
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M4 20c1-4 4.5-6 8-6s7 2 8 6" />
-                  </svg>
-                  Profil Saya
-                </a>
-                <a href="#" data-logout class="danger">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  >
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                    <path d="M16 17l5-5-5-5" />
-                    <path d="M21 12H9" />
-                  </svg>
-                  Keluar
-                </a>
+                <a href="profil.html"> Profil Saya </a>
+
+                <a href="#" data-logout class="danger"> Keluar </a>
               </div>
             </div>
           </div>
         </header>
 
-<main class="content" id="area-laporan">          <div class="page-head">
-            <div>
-              <h1 style="font-size: 1.4rem">Laporan Bulanan</h1>
-              <p class="desc">
-                Ringkasan aktivitas inventaris per bulan. Unduh atau cetak
-                langsung dari peramban.
-              </p>
-            </div>
-            <div style="display: flex; gap: 0.6rem">
-              <select class="input" style="width: 150px">
-                <option>Agustus 2026</option>
-                <option>Juli 2026</option>
-                <option>Juni 2026</option>
-              </select>
-<button class="btn btn-gold" id="btn-cetak-laporan">                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  width="16"
-                  height="16"
+        <!-- =====================================================
+             CONTENT
+        ====================================================== -->
+
+        <main class="content">
+          <div class="laporan-page">
+            <!-- HEADER -->
+
+            <div class="laporan-page-head">
+              <div>
+                <h2>Laporan Bulanan</h2>
+
+                <p class="desc">
+                  Ringkasan aktivitas inventaris dan transaksi peminjaman.
+                </p>
+              </div>
+
+              <div class="laporan-actions">
+                <select
+                  class="input"
+                  id="filter-bulan-laporan"
+                  aria-label="Pilih bulan"
+                ></select>
+
+                <select
+                  class="input"
+                  id="filter-tahun-laporan"
+                  aria-label="Pilih tahun"
+                ></select>
+
+                <button
+                  class="btn btn-gold"
+                  id="btn-cetak-laporan"
+                  type="button"
                 >
-                  <path d="M6 9V3h12v6" />
-                  <rect x="6" y="13" width="12" height="8" />
-                  <path
-                    d="M6 17H4a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"
-                  />
-                </svg>
-                Cetak Laporan
-              </button>
-            </div>
-          </div>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    width="16"
+                    height="16"
+                  >
+                    <path d="M6 9V3h12v6" />
+                    <rect x="6" y="13" width="12" height="8" />
+                    <path
+                      d="M6 17H4a1 1 0 0 1-1-1v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a1 1 0 0 1-1 1h-2"
+                    />
+                  </svg>
 
-          <div class="stat-grid">
-            <div class="card stat-card">
-              <div class="label">Transaksi Peminjaman</div>
-              <div class="value">18</div>
-              <div class="delta up">Bulan Agustus 2026</div>
+                  Cetak Laporan
+                </button>
+              </div>
             </div>
-            <div class="card stat-card">
-              <div class="label">Barang Dikembalikan</div>
-              <div class="value">15</div>
-              <div class="delta">3 masih dipinjam</div>
-            </div>
-            <div class="card stat-card">
-              <div class="label">Kondisi Rusak/Hilang</div>
-              <div class="value">2</div>
-              <div class="delta down">Perlu tindak lanjut</div>
-            </div>
-            <div class="card stat-card">
-              <div class="label">Akun Pegawai Baru</div>
-              <div class="value">3</div>
-              <div class="delta up">Terkonfirmasi bulan ini</div>
-            </div>
-          </div>
 
-          <div class="card" style="padding: 1.4rem">
-            <h3 style="font-size: 1.05rem; margin-bottom: 1rem">
-              Rincian Transaksi — Agustus 2026
-            </h3>
-            <table class="print-table">
-              <thead>
-                <tr>
-                  <th>No. BAST</th>
-                  <th>Pegawai</th>
-                  <th>Barang</th>
-                  <th>Tgl Pinjam</th>
-                  <th>Tgl Kembali</th>
-                  <th>Kondisi</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>014/BAST/08/2026</td>
-                  <td>Lindawati</td>
-                  <td>Laptop, Proyektor</td>
-                  <td>26 Agu 2026</td>
-                  <td>—</td>
-                  <td>Dipinjam</td>
-                </tr>
-                <tr>
-                  <td>013/BAST/08/2026</td>
-                  <td>Rusli</td>
-                  <td>Kursi Lipat (10)</td>
-                  <td>24 Agu 2026</td>
-                  <td>—</td>
-                  <td>Dipinjam</td>
-                </tr>
-                <tr>
-                  <td>012/BAST/08/2026</td>
-                  <td>Mauliza Wira K.</td>
-                  <td>Sound System</td>
-                  <td>19 Agu 2026</td>
-                  <td>21 Agu 2026</td>
-                  <td>Rusak Ringan</td>
-                </tr>
-              </tbody>
-            </table>
+            <!-- =================================================
+                 STATISTIK
+            ================================================== -->
+
+            <div class="laporan-stat-grid">
+              <div class="laporan-stat-card">
+                <div class="laporan-stat-label">Transaksi Peminjaman</div>
+
+                <div class="laporan-stat-value" id="stat-transaksi">...</div>
+
+                <div class="laporan-stat-info" id="stat-transaksi-info">
+                  Memuat data...
+                </div>
+              </div>
+
+              <div class="laporan-stat-card">
+                <div class="laporan-stat-label">Barang Dikembalikan</div>
+
+                <div class="laporan-stat-value" id="stat-dikembalikan">...</div>
+
+                <div
+                  class="laporan-stat-info success"
+                  id="stat-dikembalikan-info"
+                >
+                  Memuat data...
+                </div>
+              </div>
+
+              <div class="laporan-stat-card">
+                <div class="laporan-stat-label">Kondisi Rusak / Hilang</div>
+
+                <div class="laporan-stat-value" id="stat-rusak">...</div>
+
+                <div class="laporan-stat-info danger" id="stat-rusak-info">
+                  Memuat data...
+                </div>
+              </div>
+
+              <div class="laporan-stat-card">
+                <div class="laporan-stat-label">Akun Pegawai Baru</div>
+
+                <div class="laporan-stat-value" id="stat-pegawai">...</div>
+
+                <div class="laporan-stat-info success" id="stat-pegawai-info">
+                  Memuat data...
+                </div>
+              </div>
+            </div>
+
+            <!-- =================================================
+                 2 GRAFIK
+            ================================================== -->
+
+            <div class="laporan-chart-grid">
+              <!-- GRAFIK 1 -->
+
+              <div class="laporan-chart-card">
+                <div class="laporan-chart-head">
+                  <div>
+                    <h3 class="laporan-chart-title">
+                      Tren Peminjaman & Pengembalian
+                    </h3>
+
+                    <p class="laporan-chart-subtitle">
+                      Aktivitas transaksi setiap bulan pada tahun yang dipilih.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="laporan-chart-wrap">
+                  <canvas id="grafik-aktivitas"></canvas>
+                </div>
+              </div>
+
+              <!-- GRAFIK 2 -->
+
+              <div class="laporan-chart-card">
+                <div class="laporan-chart-head">
+                  <div>
+                    <h3 class="laporan-chart-title">
+                      Kondisi Barang Dikembalikan
+                    </h3>
+
+                    <p class="laporan-chart-subtitle">
+                      Kondisi barang pada bulan yang dipilih.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="laporan-donut-wrap">
+                  <canvas id="grafik-kondisi"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- =================================================
+                 TABEL
+            ================================================== -->
+
+            <div class="laporan-table-card">
+              <div class="laporan-table-head">
+                <h3 id="judul-tabel-laporan">Rincian Transaksi</h3>
+
+                <p>Daftar transaksi peminjaman pada periode yang dipilih.</p>
+              </div>
+
+              <div class="laporan-table-wrap">
+                <table class="laporan-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 15%">No. BAST</th>
+
+                      <th style="width: 15%">Pegawai</th>
+
+                      <th style="width: 25%">Barang</th>
+
+                      <th style="width: 12%">Tgl Pinjam</th>
+
+                      <th style="width: 12%">Tgl Kembali</th>
+
+                      <th style="width: 21%">Kondisi</th>
+                    </tr>
+                  </thead>
+
+                  <tbody id="tabel-laporan-body">
+                    <tr>
+                      <td colspan="6" class="laporan-empty">
+                        Memuat data laporan...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="laporan-table-wrap">
+                  <table class="laporan-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 15%">No. BAST</th>
+                        <th style="width: 15%">Pegawai</th>
+                        <th style="width: 25%">Barang</th>
+                        <th style="width: 12%">Tgl Pinjam</th>
+                        <th style="width: 12%">Tgl Kembali</th>
+                        <th style="width: 21%">Kondisi</th>
+                      </tr>
+                    </thead>
+
+                    <tbody id="tabel-laporan-body">
+                      <!-- 
+      <tr>
+        <td colspan="6" class="laporan-empty">
+          Memuat data laporan...
+        </td>
+      </tr> -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- PAGINATION -->
+                <div class="laporan-pagination">
+                  <div class="laporan-pagination-info">
+                    Menampilkan
+                    <b id="pagination-dari">0</b>
+                    -
+                    <b id="pagination-sampai">0</b>
+                    dari
+                    <b id="pagination-total">0</b>
+                    transaksi
+                  </div>
+
+                  <div class="laporan-pagination-controls">
+                    <label class="laporan-page-size">
+                      <span>Tampilkan</span>
+
+                      <select
+                        class="input"
+                        id="pagination-page-size"
+                        aria-label="Jumlah data per halaman"
+                      >
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                      </select>
+                    </label>
+
+                    <button
+                      type="button"
+                      class="laporan-page-btn"
+                      id="pagination-prev"
+                    >
+                      ‹ Sebelumnya
+                    </button>
+
+                    <div
+                      class="laporan-page-number"
+                      id="pagination-pages"
+                    ></div>
+
+                    <button
+                      type="button"
+                      class="laporan-page-btn"
+                      id="pagination-next"
+                    >
+                      Berikutnya ›
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </main>
       </div>
     </div>
 
+    <!-- TOAST -->
+
     <div id="toast-root" class="toast-stack"></div>
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
 
     <script type="module" src="../js/config.js"></script>
     <script type="module" src="../js/supabase.js"></script>
     <script type="module" src="../js/auth/auth-guard.js"></script>
+
     <script src="../js/components/sidebar.js"></script>
     <script src="../js/components/modal.js"></script>
     <script src="../js/components/notification.js"></script>
     <script src="../js/components/logout.js"></script>
+
+    <!-- CHART.JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <!-- LAPORAN -->
+
     <script type="module" src="../js/admin/laporan.js"></script>
   </body>
 </html>

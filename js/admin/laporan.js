@@ -2,70 +2,120 @@ import { supabase } from "../supabase.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   // =========================================================
-  // ELEMENT HTML
+  // ELEMENT
   // =========================================================
 
-  const statCards = document.querySelectorAll(".stat-card");
+  const monthSelect = document.getElementById(
+    "filter-bulan-laporan",
+  );
 
-  const transaksiValue =
-    statCards[0]?.querySelector(".value");
+  const yearSelect = document.getElementById(
+    "filter-tahun-laporan",
+  );
 
-  const dikembalikanValue =
-    statCards[1]?.querySelector(".value");
+  const btnCetak = document.getElementById(
+    "btn-cetak-laporan",
+  );
 
-  const rusakValue =
-    statCards[2]?.querySelector(".value");
+  const statTransaksi = document.getElementById(
+    "stat-transaksi",
+  );
 
-  const pegawaiValue =
-    statCards[3]?.querySelector(".value");
+  const statTransaksiInfo = document.getElementById(
+    "stat-transaksi-info",
+  );
 
-  const transaksiDelta =
-    statCards[0]?.querySelector(".delta");
+  const statDikembalikan = document.getElementById(
+    "stat-dikembalikan",
+  );
 
-  const dikembalikanDelta =
-    statCards[1]?.querySelector(".delta");
+  const statDikembalikanInfo = document.getElementById(
+    "stat-dikembalikan-info",
+  );
 
-  const rusakDelta =
-    statCards[2]?.querySelector(".delta");
+  const statRusak = document.getElementById(
+    "stat-rusak",
+  );
 
-  const pegawaiDelta =
-    statCards[3]?.querySelector(".delta");
+  const statRusakInfo = document.getElementById(
+    "stat-rusak-info",
+  );
 
-  // Select lama dari HTML
-  const oldMonthSelect =
-    document.querySelector(".page-head select");
+  const statPegawai = document.getElementById(
+    "stat-pegawai",
+  );
 
-  const tableBody =
-    document.querySelector(".print-table tbody");
+  const statPegawaiInfo = document.getElementById(
+    "stat-pegawai-info",
+  );
 
-  const tableTitle =
-    document.querySelector(".card h3");
+  const tableTitle = document.getElementById(
+    "judul-tabel-laporan",
+  );
 
-  const btnCetak =
-    document.getElementById("btn-cetak-laporan") ||
-    document.querySelector(".page-head .btn.btn-gold");
+  const tableBody = document.getElementById(
+    "tabel-laporan-body",
+  );
+
+  const canvasAktivitas = document.getElementById(
+    "grafik-aktivitas",
+  );
+
+  const canvasKondisi = document.getElementById(
+    "grafik-kondisi",
+  );
 
   // =========================================================
-  // VARIABEL DROPDOWN
+  // PAGINATION ELEMENT
   // =========================================================
 
-  let monthSelect = null;
-  let yearSelect = null;
+  const paginationDari = document.getElementById(
+    "pagination-dari",
+  );
+
+  const paginationSampai = document.getElementById(
+    "pagination-sampai",
+  );
+
+  const paginationTotal = document.getElementById(
+    "pagination-total",
+  );
+
+  const paginationPageSize = document.getElementById(
+    "pagination-page-size",
+  );
+
+  const paginationPrev = document.getElementById(
+    "pagination-prev",
+  );
+
+  const paginationNext = document.getElementById(
+    "pagination-next",
+  );
+
+  const paginationPages = document.getElementById(
+    "pagination-pages",
+  );
 
   // =========================================================
-  // DATA LAPORAN
+  // VARIABEL
   // =========================================================
+
+  let grafikAktivitas = null;
+  let grafikKondisi = null;
 
   let dataLaporan = [];
 
-  let periodeLaporan = {
+  let halamanSaatIni = 1;
+
+  let jumlahPerHalaman = Number(
+    paginationPageSize?.value || 10,
+  );
+
+  let periode = {
     bulan: "",
     tahun: "",
   };
-
-  // =========================================================
-  // NAMA BULAN
-  // =========================================================
 
   const namaBulan = [
     "Januari",
@@ -82,158 +132,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     "Desember",
   ];
 
+  const namaBulanSingkat = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "Mei",
+    "Jun",
+    "Jul",
+    "Agu",
+    "Sep",
+    "Okt",
+    "Nov",
+    "Des",
+  ];
+
   // =========================================================
-  // BUAT DROPDOWN BULAN + TAHUN
+  // ESCAPE HTML
   // =========================================================
 
-  function isiDropdownPeriode() {
-    if (!oldMonthSelect) {
-      return;
-    }
-
-    // Ambil parent select lama
-    const parent =
-      oldMonthSelect.parentElement;
-
-    if (!parent) {
-      return;
-    }
-
-    // -------------------------------------------------------
-    // Buat container baru
-    // -------------------------------------------------------
-
-    const wrapper =
-      document.createElement("div");
-
-    wrapper.style.display = "flex";
-    wrapper.style.gap = "0.5rem";
-    wrapper.style.alignItems = "center";
-
-    // -------------------------------------------------------
-    // Dropdown BULAN
-    // -------------------------------------------------------
-
-    monthSelect =
-      document.createElement("select");
-
-    monthSelect.className =
-      "input";
-
-    monthSelect.style.width =
-      "150px";
-
-    monthSelect.setAttribute(
-      "aria-label",
-      "Pilih bulan laporan",
-    );
-
-    namaBulan.forEach(
-      (nama, index) => {
-        const option =
-          document.createElement("option");
-
-        option.value =
-          String(index + 1).padStart(
-            2,
-            "0",
-          );
-
-        option.textContent =
-          nama;
-
-        monthSelect.appendChild(
-          option,
-        );
-      },
-    );
-
-    // -------------------------------------------------------
-    // Dropdown TAHUN
-    // -------------------------------------------------------
-
-    yearSelect =
-      document.createElement("select");
-
-    yearSelect.className =
-      "input";
-
-    yearSelect.style.width =
-      "120px";
-
-    yearSelect.setAttribute(
-      "aria-label",
-      "Pilih tahun laporan",
-    );
-
-    const tahunSekarang =
-      new Date().getFullYear();
-
-    // Tampilkan tahun dari 2020 sampai
-    // 1 tahun ke depan.
-    //
-    // Contoh:
-    // 2020
-    // 2021
-    // 2022
-    // ...
-    // 2026
-    // 2027
-
-    const tahunMulai = 2020;
-    const tahunAkhir =
-      tahunSekarang + 1;
-
-    for (
-      let tahun = tahunAkhir;
-      tahun >= tahunMulai;
-      tahun--
-    ) {
-      const option =
-        document.createElement("option");
-
-      option.value =
-        String(tahun);
-
-      option.textContent =
-        String(tahun);
-
-      yearSelect.appendChild(
-        option,
-      );
-    }
-
-    // -------------------------------------------------------
-    // Set periode awal = bulan sekarang
-    // -------------------------------------------------------
-
-    const bulanSekarang =
-      String(
-        new Date().getMonth() + 1,
-      ).padStart(2, "0");
-
-    monthSelect.value =
-      bulanSekarang;
-
-    yearSelect.value =
-      String(tahunSekarang);
-
-    // -------------------------------------------------------
-    // Masukkan dropdown baru
-    // -------------------------------------------------------
-
-    wrapper.appendChild(
-      monthSelect,
-    );
-
-    wrapper.appendChild(
-      yearSelect,
-    );
-
-    parent.replaceChild(
-      wrapper,
-      oldMonthSelect,
-    );
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
   // =========================================================
@@ -245,59 +169,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       return "—";
     }
 
-    const date =
-      new Date(
-        `${tanggal}T00:00:00`,
-      );
+    const date = new Date(`${tanggal}T00:00:00`);
 
-    if (
-      Number.isNaN(
-        date.getTime(),
-      )
-    ) {
+    if (Number.isNaN(date.getTime())) {
       return "—";
     }
 
-    return date.toLocaleDateString(
-      "id-ID",
-      {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      },
-    );
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   }
 
   // =========================================================
-  // ESCAPE HTML
-  // =========================================================
-
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll(
-        "&",
-        "&amp;",
-      )
-      .replaceAll(
-        "<",
-        "&lt;",
-      )
-      .replaceAll(
-        ">",
-        "&gt;",
-      )
-      .replaceAll(
-        '"',
-        "&quot;",
-      )
-      .replaceAll(
-        "'",
-        "&#039;",
-      );
-  }
-
-  // =========================================================
-  // LABEL KONDISI
+  // FORMAT KONDISI
   // =========================================================
 
   function formatKondisi(kondisi) {
@@ -305,27 +191,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       return "";
     }
 
-    const value =
-      String(kondisi)
-        .trim()
-        .toLowerCase();
+    const value = String(kondisi)
+      .trim()
+      .toLowerCase();
 
-    const labels = {
-      baik: "Baik",
-      rusak: "Rusak",
-      hilang: "Hilang",
-      tidak_lengkap:
-        "Tidak Lengkap",
-    };
+    if (value.includes("rusak")) {
+      return "Rusak";
+    }
 
-    return (
-      labels[value] ||
-      kondisi
-    );
+    if (value.includes("hilang")) {
+      return "Hilang";
+    }
+
+    if (value.includes("tidak_lengkap")) {
+      return "Tidak Lengkap";
+    }
+
+    if (value.includes("tidak lengkap")) {
+      return "Tidak Lengkap";
+    }
+
+    if (value.includes("baik")) {
+      return "Baik";
+    }
+
+    return kondisi;
   }
 
   // =========================================================
-  // STATUS TRANSAKSI
+  // FORMAT STATUS
   // =========================================================
 
   function formatStatus(status) {
@@ -353,57 +247,74 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // =========================================================
-  // LOAD LAPORAN
+  // SETUP DROPDOWN
   // =========================================================
 
-  async function loadReport() {
-    if (
-      !monthSelect ||
-      !yearSelect
+  function setupDropdown() {
+    const sekarang = new Date();
+
+    const bulanSekarang =
+      sekarang.getMonth() + 1;
+
+    const tahunSekarang =
+      sekarang.getFullYear();
+
+    monthSelect.innerHTML = "";
+
+    namaBulan.forEach((nama, index) => {
+      const option =
+        document.createElement("option");
+
+      option.value = String(index + 1)
+        .padStart(2, "0");
+
+      option.textContent = nama;
+
+      monthSelect.appendChild(option);
+    });
+
+    monthSelect.value = String(
+      bulanSekarang,
+    ).padStart(2, "0");
+
+    yearSelect.innerHTML = "";
+
+    for (
+      let tahun = tahunSekarang + 1;
+      tahun >= 2020;
+      tahun--
     ) {
-      return;
+      const option =
+        document.createElement("option");
+
+      option.value = String(tahun);
+      option.textContent = String(tahun);
+
+      yearSelect.appendChild(option);
     }
 
-    const bulan =
-      monthSelect.value;
+    yearSelect.value =
+      String(tahunSekarang);
+  }
 
-    const tahun =
-      yearSelect.value;
+  // =========================================================
+  // RANGE TANGGAL
+  // =========================================================
 
-    if (
-      !bulan ||
-      !tahun
-    ) {
-      return;
-    }
-
-    // -------------------------------------------------------
-    // PERIODE TERPILIH
-    // -------------------------------------------------------
-
-    periodeLaporan.bulan =
-      namaBulan[
-        Number(bulan) - 1
-      ];
-
-    periodeLaporan.tahun =
-      tahun;
-
-    // -------------------------------------------------------
-    // TANGGAL AWAL
-    // -------------------------------------------------------
+  function getRangeTanggal(
+    bulan,
+    tahun,
+  ) {
+    const bulanNumber =
+      Number(bulan);
 
     const tanggalAwal =
       `${tahun}-${bulan}-01`;
 
-    // -------------------------------------------------------
-    // TANGGAL BULAN BERIKUTNYA
-    // -------------------------------------------------------
-
     const tanggalBerikutnya =
       new Date(
         Number(tahun),
-        Number(bulan),
+        bulanNumber,
         1,
       );
 
@@ -413,58 +324,263 @@ document.addEventListener("DOMContentLoaded", async () => {
     const bulanBerikutnya =
       String(
         tanggalBerikutnya.getMonth() + 1,
-      ).padStart(
-        2,
-        "0",
-      );
+      ).padStart(2, "0");
 
     const tanggalAkhir =
       `${tahunBerikutnya}-${bulanBerikutnya}-01`;
 
-    // =======================================================
+    return {
+      tanggalAwal,
+      tanggalAkhir,
+    };
+  }
+
+  // =========================================================
+  // PAGINATION
+  // =========================================================
+
+  function getTotalHalaman() {
+    if (!dataLaporan.length) {
+      return 1;
+    }
+
+    return Math.ceil(
+      dataLaporan.length /
+        jumlahPerHalaman,
+    );
+  }
+
+  function renderPagination() {
+    if (!paginationDari) {
+      return;
+    }
+
+    const totalData =
+      dataLaporan.length;
+
+    const totalHalaman =
+      getTotalHalaman();
+
+    if (halamanSaatIni > totalHalaman) {
+      halamanSaatIni = totalHalaman;
+    }
+
+    if (halamanSaatIni < 1) {
+      halamanSaatIni = 1;
+    }
+
+    if (totalData === 0) {
+      paginationDari.textContent = "0";
+      paginationSampai.textContent = "0";
+      paginationTotal.textContent = "0";
+
+      paginationPrev.disabled = true;
+      paginationNext.disabled = true;
+
+      paginationPages.innerHTML = "";
+
+      return;
+    }
+
+    const mulai =
+      (halamanSaatIni - 1) *
+        jumlahPerHalaman +
+      1;
+
+    const sampai = Math.min(
+      halamanSaatIni *
+        jumlahPerHalaman,
+      totalData,
+    );
+
+    paginationDari.textContent =
+      mulai;
+
+    paginationSampai.textContent =
+      sampai;
+
+    paginationTotal.textContent =
+      totalData;
+
+    paginationPrev.disabled =
+      halamanSaatIni === 1;
+
+    paginationNext.disabled =
+      halamanSaatIni === totalHalaman;
+
+    paginationPages.innerHTML = "";
+
+    // -------------------------------------------------------
+    // Buat nomor halaman
+    // -------------------------------------------------------
+
+    const maxButton = 5;
+
+    let startPage = Math.max(
+      1,
+      halamanSaatIni -
+        Math.floor(maxButton / 2),
+    );
+
+    let endPage = Math.min(
+      totalHalaman,
+      startPage + maxButton - 1,
+    );
+
+    if (
+      endPage - startPage + 1 <
+      maxButton
+    ) {
+      startPage = Math.max(
+        1,
+        endPage - maxButton + 1,
+      );
+    }
+
+    // Tombol halaman pertama
+    if (startPage > 1) {
+      buatTombolHalaman(1);
+
+      if (startPage > 2) {
+        const dots =
+          document.createElement("span");
+
+        dots.textContent = "...";
+        dots.style.padding = "0 0.2rem";
+        dots.style.color =
+          "var(--ink-500)";
+
+        paginationPages.appendChild(
+          dots,
+        );
+      }
+    }
+
+    for (
+      let nomor = startPage;
+      nomor <= endPage;
+      nomor++
+    ) {
+      buatTombolHalaman(nomor);
+    }
+
+    // Tombol halaman terakhir
+    if (endPage < totalHalaman) {
+      if (endPage < totalHalaman - 1) {
+        const dots =
+          document.createElement("span");
+
+        dots.textContent = "...";
+        dots.style.padding = "0 0.2rem";
+        dots.style.color =
+          "var(--ink-500)";
+
+        paginationPages.appendChild(
+          dots,
+        );
+      }
+
+      buatTombolHalaman(
+        totalHalaman,
+      );
+    }
+  }
+
+  function buatTombolHalaman(nomor) {
+    const button =
+      document.createElement("button");
+
+    button.type = "button";
+    button.textContent = nomor;
+
+    if (
+      nomor === halamanSaatIni
+    ) {
+      button.classList.add("active");
+      button.setAttribute(
+        "aria-current",
+        "page",
+      );
+    }
+
+    button.addEventListener(
+      "click",
+      () => {
+        halamanSaatIni = nomor;
+
+        renderTable();
+      },
+    );
+
+    paginationPages.appendChild(
+      button,
+    );
+  }
+
+  // =========================================================
+  // LOAD DATA UTAMA
+  // =========================================================
+
+  async function loadReport() {
+    const bulan = monthSelect.value;
+    const tahun = yearSelect.value;
+
+    if (!bulan || !tahun) {
+      return;
+    }
+
+    // Reset halaman setiap kali periode berubah
+    halamanSaatIni = 1;
+
+    periode.bulan =
+      namaBulan[Number(bulan) - 1];
+
+    periode.tahun = tahun;
+
+    const {
+      tanggalAwal,
+      tanggalAkhir,
+    } = getRangeTanggal(
+      bulan,
+      tahun,
+    );
+
+    // -------------------------------------------------------
     // LOADING
-    // =======================================================
+    // -------------------------------------------------------
 
-    if (transaksiValue) {
-      transaksiValue.textContent =
-        "...";
-    }
+    statTransaksi.textContent = "...";
+    statDikembalikan.textContent = "...";
+    statRusak.textContent = "...";
+    statPegawai.textContent = "...";
 
-    if (dikembalikanValue) {
-      dikembalikanValue.textContent =
-        "...";
-    }
+    statTransaksiInfo.textContent =
+      "Memuat data...";
 
-    if (rusakValue) {
-      rusakValue.textContent =
-        "...";
-    }
+    statDikembalikanInfo.textContent =
+      "Memuat data...";
 
-    if (pegawaiValue) {
-      pegawaiValue.textContent =
-        "...";
-    }
+    statRusakInfo.textContent =
+      "Memuat data...";
 
-    if (tableTitle) {
-      tableTitle.textContent =
-        `Rincian Transaksi — ${periodeLaporan.bulan} ${tahun}`;
-    }
+    statPegawaiInfo.textContent =
+      "Memuat data...";
 
-    if (tableBody) {
-      tableBody.innerHTML = `
-        <tr>
-          <td
-            colspan="6"
-            style="text-align:center; padding:2rem;"
-          >
-            Memuat data...
-          </td>
-        </tr>
-      `;
-    }
+    tableTitle.textContent =
+      `Rincian Transaksi — ${periode.bulan} ${tahun}`;
+
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="laporan-empty">
+          Memuat data laporan...
+        </td>
+      </tr>
+    `;
+
+    renderPagination();
 
     // =======================================================
-    // 1. AMBIL PEMINJAMAN
+    // 1. PEMINJAMAN
     // =======================================================
 
     const {
@@ -473,13 +589,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     } = await supabase
       .from("peminjaman")
       .select("*")
-      .in(
-        "status",
-        [
-          "dipinjam",
-          "dikembalikan",
-        ],
-      )
+      .in("status", [
+        "dipinjam",
+        "dikembalikan",
+      ])
       .gte(
         "tanggal_pinjam",
         tanggalAwal,
@@ -509,7 +622,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       peminjaman || [];
 
     // =======================================================
-    // 2. AMBIL PROFILES
+    // 2. PROFILES
     // =======================================================
 
     const {
@@ -537,15 +650,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const idPeminjaman =
       dataPeminjaman.map(
-        (item) =>
-          item.id,
+        (item) => item.id,
       );
 
     let dataDetail = [];
 
-    if (
-      idPeminjaman.length > 0
-    ) {
+    if (idPeminjaman.length > 0) {
       const {
         data: detail,
         error: detailError,
@@ -563,8 +673,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           detailError,
         );
       } else {
-        dataDetail =
-          detail || [];
+        dataDetail = detail || [];
       }
     }
 
@@ -574,18 +683,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const idDetail =
       dataDetail.map(
-        (item) =>
-          item.id,
+        (item) => item.id,
       );
 
     let dataUnitPeminjaman = [];
 
-    if (
-      idDetail.length > 0
-    ) {
+    if (idDetail.length > 0) {
       const {
         data: unitPeminjaman,
-        error: unitPeminjamanError,
+        error: unitError,
       } = await supabase
         .from("unit_peminjaman")
         .select("*")
@@ -594,12 +700,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           idDetail,
         );
 
-      if (
-        unitPeminjamanError
-      ) {
+      if (unitError) {
         console.error(
           "Gagal mengambil unit peminjaman:",
-          unitPeminjamanError,
+          unitError,
         );
       } else {
         dataUnitPeminjaman =
@@ -613,8 +717,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const idUnitPeminjaman =
       dataUnitPeminjaman.map(
-        (item) =>
-          item.id,
+        (item) => item.id,
       );
 
     let dataPengembalian = [];
@@ -633,11 +736,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           idUnitPeminjaman,
         );
 
-      if (
-        pengembalianError
-      ) {
+      if (pengembalianError) {
         console.error(
-          "Gagal mengambil detail pengembalian:",
+          "Gagal mengambil pengembalian:",
           pengembalianError,
         );
       } else {
@@ -661,9 +762,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let dataInventaris = [];
 
-    if (
-      idInventaris.length > 0
-    ) {
+    if (idInventaris.length > 0) {
       const {
         data: inventaris,
         error: inventarisError,
@@ -709,161 +808,124 @@ document.addEventListener("DOMContentLoaded", async () => {
                 peminjamanItem.id,
             );
 
-          // -------------------------------------------------
-          // BARANG
-          // -------------------------------------------------
-
           const daftarBarang =
             detailTransaksi
-              .map(
-                (detail) => {
-                  const barang =
-                    dataInventaris.find(
-                      (item) =>
-                        item.id ===
-                        detail.inventaris_id,
-                    );
+              .map((detail) => {
+                const barang =
+                  dataInventaris.find(
+                    (item) =>
+                      item.id ===
+                      detail.inventaris_id,
+                  );
 
-                  const namaBarang =
-                    barang?.nama_barang ||
-                    "-";
+                const namaBarang =
+                  barang?.nama_barang ||
+                  "-";
 
-                  const unitUntukDetail =
-                    dataUnitPeminjaman.filter(
-                      (unit) =>
-                        unit.detail_peminjaman_id ===
-                        detail.id,
-                    );
+                const unit =
+                  dataUnitPeminjaman.filter(
+                    (item) =>
+                      item.detail_peminjaman_id ===
+                      detail.id,
+                  );
 
-                  const jumlahUnit =
-                    unitUntukDetail.length >
-                    0
-                      ? unitUntukDetail.length
-                      : Number(
-                          detail.jumlah ||
-                            1,
-                        );
+                const jumlah =
+                  unit.length > 0
+                    ? unit.length
+                    : Number(
+                        detail.jumlah || 1,
+                      );
 
-                  return jumlahUnit > 1
-                    ? `${namaBarang} (${jumlahUnit})`
-                    : namaBarang;
-                },
-              )
+                return jumlah > 1
+                  ? `${namaBarang} (${jumlah})`
+                  : namaBarang;
+              })
               .join(", ");
-
-          // -------------------------------------------------
-          // KONDISI
-          // -------------------------------------------------
 
           const daftarKondisi =
             detailTransaksi
-              .map(
-                (detail) => {
-                  const unitUntukDetail =
-                    dataUnitPeminjaman.filter(
-                      (unit) =>
-                        unit.detail_peminjaman_id ===
-                        detail.id,
+              .map((detail) => {
+                const unit =
+                  dataUnitPeminjaman.filter(
+                    (item) =>
+                      item.detail_peminjaman_id ===
+                      detail.id,
+                  );
+
+                if (unit.length === 0) {
+                  return formatStatus(
+                    peminjamanItem.status,
+                  );
+                }
+
+                const kondisiList = [];
+
+                unit.forEach((unitItem) => {
+                  const pengembalian =
+                    dataPengembalian.find(
+                      (item) =>
+                        item.unit_peminjaman_id ===
+                        unitItem.id,
                     );
 
                   if (
-                    unitUntukDetail.length ===
-                    0
+                    pengembalian?.kondisi
                   ) {
-                    if (
-                      peminjamanItem.status ===
-                      "dikembalikan"
-                    ) {
-                      return "Dikembalikan";
-                    }
-
-                    return "Dipinjam";
+                    kondisiList.push(
+                      formatKondisi(
+                        pengembalian.kondisi,
+                      ),
+                    );
+                  } else if (
+                    unitItem.kondisi_saat_pinjam
+                  ) {
+                    kondisiList.push(
+                      formatKondisi(
+                        unitItem.kondisi_saat_pinjam,
+                      ),
+                    );
+                  } else {
+                    kondisiList.push(
+                      "Baik",
+                    );
                   }
+                });
 
-                  const kondisiList =
-                    [];
+                const hitung = {};
 
-                  unitUntukDetail.forEach(
-                    (unit) => {
-                      const pengembalian =
-                        dataPengembalian.find(
-                          (item) =>
-                            item.unit_peminjaman_id ===
-                            unit.id,
-                        );
+                kondisiList.forEach(
+                  (kondisi) => {
+                    hitung[kondisi] =
+                      (hitung[kondisi] || 0) +
+                      1;
+                  },
+                );
 
-                      if (
-                        pengembalian?.kondisi
-                      ) {
-                        kondisiList.push(
-                          formatKondisi(
-                            pengembalian.kondisi,
-                          ),
-                        );
-                      } else if (
-                        unit.kondisi_saat_pinjam
-                      ) {
-                        kondisiList.push(
-                          formatKondisi(
-                            unit.kondisi_saat_pinjam,
-                          ),
-                        );
-                      } else {
-                        kondisiList.push(
-                          "Baik",
-                        );
-                      }
-                    },
-                  );
-
-                  const hitungKondisi =
-                    {};
-
-                  kondisiList.forEach(
-                    (kondisi) => {
-                      hitungKondisi[
-                        kondisi
-                      ] =
-                        (
-                          hitungKondisi[
-                            kondisi
-                          ] || 0
-                        ) + 1;
-                    },
-                  );
-
-                  return Object.entries(
-                    hitungKondisi,
+                return Object.entries(
+                  hitung,
+                )
+                  .map(
+                    ([kondisi, jumlah]) =>
+                      jumlah > 1
+                        ? `${kondisi} (${jumlah})`
+                        : kondisi,
                   )
-                    .map(
-                      ([
-                        kondisi,
-                        jumlah,
-                      ]) =>
-                        jumlah > 1
-                          ? `${kondisi} (${jumlah})`
-                          : kondisi,
-                    )
-                    .join(", ");
-                },
-              )
+                  .join(", ");
+              })
               .join("; ");
 
           return {
-            id:
-              peminjamanItem.id,
+            id: peminjamanItem.id,
 
             nomor_bast:
               peminjamanItem.nomor_bast ||
               "-",
 
             nama_pegawai:
-              pegawai?.nama ||
-              "-",
+              pegawai?.nama || "-",
 
             barang:
-              daftarBarang ||
-              "-",
+              daftarBarang || "-",
 
             tanggal_pinjam:
               peminjamanItem.tanggal_pinjam,
@@ -872,8 +934,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               peminjamanItem.tanggal_kembali,
 
             kondisi:
-              daftarKondisi ||
-              "-",
+              daftarKondisi || "-",
 
             status:
               peminjamanItem.status ||
@@ -883,7 +944,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
 
     // =======================================================
-    // 8. HITUNG TRANSAKSI
+    // 8. STATISTIK
     // =======================================================
 
     const jumlahTransaksi =
@@ -904,34 +965,55 @@ document.addEventListener("DOMContentLoaded", async () => {
       ).length;
 
     // =======================================================
-    // 9. HITUNG RUSAK / HILANG
+    // 9. RUSAK / HILANG
     // =======================================================
 
-    let jumlahRusakHilang =
-      0;
+    let jumlahRusak = 0;
+    let jumlahHilang = 0;
+    let jumlahBaik = 0;
+    let jumlahTidakLengkap = 0;
 
     dataPengembalian.forEach(
-      (pengembalian) => {
+      (item) => {
         const kondisi =
-          String(
-            pengembalian.kondisi ||
-              "",
-          )
-            .trim()
-            .toLowerCase();
+          formatKondisi(
+            item.kondisi,
+          );
 
-        if (
-          kondisi === "rusak" ||
-          kondisi === "hilang"
+        if (kondisi === "Rusak") {
+          jumlahRusak++;
+        } else if (
+          kondisi === "Hilang"
         ) {
-          jumlahRusakHilang++;
+          jumlahHilang++;
+        } else if (
+          kondisi === "Tidak Lengkap"
+        ) {
+          jumlahTidakLengkap++;
+        } else if (
+          kondisi === "Baik"
+        ) {
+          jumlahBaik++;
         }
       },
     );
 
+    const jumlahRusakHilang =
+      jumlahRusak + jumlahHilang;
+
     // =======================================================
-    // 10. HITUNG PEGAWAI BARU
+    // 10. PEGAWAI BARU
     // =======================================================
+
+    const mulai =
+      new Date(
+        `${tanggalAwal}T00:00:00`,
+      );
+
+    const selesai =
+      new Date(
+        `${tanggalAkhir}T00:00:00`,
+      );
 
     const jumlahPegawaiBaru =
       dataProfiles.filter(
@@ -954,16 +1036,6 @@ document.addEventListener("DOMContentLoaded", async () => {
               profile.created_at,
             );
 
-          const mulai =
-            new Date(
-              `${tanggalAwal}T00:00:00`,
-            );
-
-          const selesai =
-            new Date(
-              `${tanggalAkhir}T00:00:00`,
-            );
-
           return (
             dibuat >= mulai &&
             dibuat < selesai
@@ -975,66 +1047,449 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 11. TAMPILKAN STATISTIK
     // =======================================================
 
-    if (transaksiValue) {
-      transaksiValue.textContent =
-        jumlahTransaksi;
-    }
+    statTransaksi.textContent =
+      jumlahTransaksi;
 
-    if (dikembalikanValue) {
-      dikembalikanValue.textContent =
-        jumlahDikembalikan;
-    }
+    statTransaksiInfo.textContent =
+      `${periode.bulan} ${tahun}`;
 
-    if (rusakValue) {
-      rusakValue.textContent =
-        jumlahRusakHilang;
-    }
+    statDikembalikan.textContent =
+      jumlahDikembalikan;
 
-    if (pegawaiValue) {
-      pegawaiValue.textContent =
-        jumlahPegawaiBaru;
-    }
+    statDikembalikanInfo.textContent =
+      `${jumlahMasihDipinjam} masih dipinjam`;
 
-    // =======================================================
-    // 12. KETERANGAN STATISTIK
-    // =======================================================
+    statRusak.textContent =
+      jumlahRusakHilang;
 
-    if (transaksiDelta) {
-      transaksiDelta.textContent =
-        `Bulan ${periodeLaporan.bulan} ${tahun}`;
-    }
+    statRusakInfo.textContent =
+      jumlahRusakHilang > 0
+        ? `${jumlahRusak} rusak · ${jumlahHilang} hilang`
+        : "Tidak ada kerusakan";
 
-    if (dikembalikanDelta) {
-      dikembalikanDelta.textContent =
-        `${jumlahMasihDipinjam} masih dipinjam`;
-    }
+    statPegawai.textContent =
+      jumlahPegawaiBaru;
 
-    if (rusakDelta) {
-      rusakDelta.textContent =
-        jumlahRusakHilang > 0
-          ? "Perlu tindak lanjut"
-          : "Tidak ada kerusakan";
-    }
-
-    if (pegawaiDelta) {
-      pegawaiDelta.textContent =
-        "Terdaftar bulan ini";
-    }
+    statPegawaiInfo.textContent =
+      "Terdaftar bulan ini";
 
     // =======================================================
-    // 13. JUDUL TABEL
-    // =======================================================
-
-    if (tableTitle) {
-      tableTitle.textContent =
-        `Rincian Transaksi — ${periodeLaporan.bulan} ${tahun}`;
-    }
-
-    // =======================================================
-    // 14. RENDER TABEL
+    // 12. RENDER TABEL + PAGINATION
     // =======================================================
 
     renderTable();
+
+    // =======================================================
+    // 13. GRAFIK BULANAN
+    // =======================================================
+
+    await loadGrafikTahunan(
+      tahun,
+    );
+
+    // =======================================================
+    // 14. GRAFIK KONDISI
+    // =======================================================
+
+    renderGrafikKondisi({
+      baik: jumlahBaik,
+      rusak: jumlahRusak,
+      hilang: jumlahHilang,
+      tidakLengkap:
+        jumlahTidakLengkap,
+    });
+  }
+
+  // =========================================================
+  // GRAFIK AKTIVITAS TAHUNAN
+  // =========================================================
+
+  async function loadGrafikTahunan(
+    tahun,
+  ) {
+    const awalTahun =
+      `${tahun}-01-01`;
+
+    const akhirTahun =
+      `${Number(tahun) + 1}-01-01`;
+
+    const {
+      data,
+      error,
+    } = await supabase
+      .from("peminjaman")
+      .select(
+        "id, tanggal_pinjam, tanggal_kembali, status",
+      )
+      .gte(
+        "tanggal_pinjam",
+        awalTahun,
+      )
+      .lt(
+        "tanggal_pinjam",
+        akhirTahun,
+      );
+
+    if (error) {
+      console.error(
+        "Gagal mengambil data grafik:",
+        error,
+      );
+
+      renderGrafikAktivitas(
+        Array(12).fill(0),
+        Array(12).fill(0),
+      );
+
+      return;
+    }
+
+    const peminjamanPerBulan =
+      Array(12).fill(0);
+
+    const pengembalianPerBulan =
+      Array(12).fill(0);
+
+    (data || []).forEach(
+      (item) => {
+        if (item.tanggal_pinjam) {
+          const tanggal =
+            new Date(
+              `${item.tanggal_pinjam}T00:00:00`,
+            );
+
+          const bulan =
+            tanggal.getMonth();
+
+          peminjamanPerBulan[
+            bulan
+          ]++;
+        }
+
+        if (
+          item.status ===
+            "dikembalikan" &&
+          item.tanggal_kembali
+        ) {
+          const tanggalKembali =
+            new Date(
+              `${item.tanggal_kembali}T00:00:00`,
+            );
+
+          const bulanKembali =
+            tanggalKembali.getMonth();
+
+          pengembalianPerBulan[
+            bulanKembali
+          ]++;
+        }
+      },
+    );
+
+    renderGrafikAktivitas(
+      peminjamanPerBulan,
+      pengembalianPerBulan,
+    );
+  }
+
+  // =========================================================
+  // RENDER GRAFIK AKTIVITAS
+  // =========================================================
+
+  function renderGrafikAktivitas(
+    dataPeminjaman,
+    dataPengembalian,
+  ) {
+    if (!canvasAktivitas) {
+      return;
+    }
+
+    if (grafikAktivitas) {
+      grafikAktivitas.destroy();
+    }
+
+    grafikAktivitas =
+      new Chart(
+        canvasAktivitas,
+        {
+          type: "line",
+
+          data: {
+            labels:
+              namaBulanSingkat,
+
+            datasets: [
+              {
+                label:
+                  "Peminjaman",
+
+                data:
+                  dataPeminjaman,
+
+                borderColor:
+                  "#3b82f6",
+
+                backgroundColor:
+                  "rgba(59, 130, 246, 0.10)",
+
+                borderWidth: 2.5,
+
+                pointRadius: 3,
+
+                pointHoverRadius: 5,
+
+                tension: 0.35,
+
+                fill: true,
+              },
+
+              {
+                label:
+                  "Pengembalian",
+
+                data:
+                  dataPengembalian,
+
+                borderColor:
+                  "#ef476f",
+
+                backgroundColor:
+                  "rgba(239, 71, 111, 0.08)",
+
+                borderWidth: 2.5,
+
+                pointRadius: 3,
+
+                pointHoverRadius: 5,
+
+                tension: 0.35,
+
+                fill: true,
+              },
+            ],
+          },
+
+          options: {
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            interaction: {
+              intersect: false,
+              mode: "index",
+            },
+
+            plugins: {
+              legend: {
+                position: "top",
+
+                align: "start",
+
+                labels: {
+                  usePointStyle: true,
+
+                  boxWidth: 8,
+
+                  padding: 18,
+                },
+              },
+
+              tooltip: {
+                backgroundColor:
+                  "#222",
+
+                padding: 10,
+
+                displayColors: true,
+              },
+            },
+
+            scales: {
+              y: {
+                beginAtZero: true,
+
+                ticks: {
+                  precision: 0,
+                },
+
+                title: {
+                  display: true,
+
+                  text:
+                    "Jumlah Transaksi",
+                },
+
+                grid: {
+                  color:
+                    "rgba(0,0,0,.07)",
+                },
+              },
+
+              x: {
+                title: {
+                  display: true,
+
+                  text: "Bulan",
+                },
+
+                grid: {
+                  display: false,
+                },
+              },
+            },
+          },
+        },
+      );
+  }
+
+  // =========================================================
+  // GRAFIK KONDISI
+  // =========================================================
+
+  function renderGrafikKondisi(
+    data,
+  ) {
+    if (!canvasKondisi) {
+      return;
+    }
+
+    if (grafikKondisi) {
+      grafikKondisi.destroy();
+    }
+
+    const total =
+      data.baik +
+      data.rusak +
+      data.hilang +
+      data.tidakLengkap;
+
+    if (total === 0) {
+      grafikKondisi =
+        new Chart(
+          canvasKondisi,
+          {
+            type: "doughnut",
+
+            data: {
+              labels: [
+                "Belum ada data",
+              ],
+
+              datasets: [
+                {
+                  data: [1],
+
+                  backgroundColor: [
+                    "#e5e7eb",
+                  ],
+
+                  borderWidth: 0,
+                },
+              ],
+            },
+
+            options: {
+              responsive: true,
+
+              maintainAspectRatio: false,
+
+              cutout: "68%",
+
+              plugins: {
+                legend: {
+                  display: false,
+                },
+
+                tooltip: {
+                  enabled: false,
+                },
+              },
+            },
+          },
+        );
+
+      return;
+    }
+
+    grafikKondisi =
+      new Chart(
+        canvasKondisi,
+        {
+          type: "doughnut",
+
+          data: {
+            labels: [
+              "Baik",
+              "Rusak",
+              "Hilang",
+              "Tidak Lengkap",
+            ],
+
+            datasets: [
+              {
+                data: [
+                  data.baik,
+                  data.rusak,
+                  data.hilang,
+                  data.tidakLengkap,
+                ],
+
+                backgroundColor: [
+                  "#22c55e",
+                  "#ef4444",
+                  "#6b7280",
+                  "#f59e0b",
+                ],
+
+                borderWidth: 3,
+
+                borderColor: "#fff",
+              },
+            ],
+          },
+
+          options: {
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            cutout: "65%",
+
+            plugins: {
+              legend: {
+                position: "bottom",
+
+                labels: {
+                  usePointStyle: true,
+
+                  padding: 16,
+
+                  boxWidth: 8,
+                },
+              },
+
+              tooltip: {
+                callbacks: {
+                  label: function (
+                    context,
+                  ) {
+                    const value =
+                      context.raw || 0;
+
+                    const persentase =
+                      (
+                        (value / total) *
+                        100
+                      ).toFixed(1);
+
+                    return ` ${context.label}: ${value} (${persentase}%)`;
+                  },
+                },
+              },
+            },
+          },
+        },
+      );
   }
 
   // =========================================================
@@ -1042,10 +1497,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // =========================================================
 
   function renderTable() {
-    if (!tableBody) {
-      return;
-    }
-
     if (
       !dataLaporan ||
       dataLaporan.length === 0
@@ -1054,19 +1505,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         <tr>
           <td
             colspan="6"
-            style="text-align:center; padding:2rem;"
+            class="laporan-empty"
           >
             Belum ada transaksi pada bulan ini.
           </td>
         </tr>
       `;
 
+      renderPagination();
+
       return;
     }
 
+    const totalHalaman =
+      getTotalHalaman();
+
+    if (
+      halamanSaatIni > totalHalaman
+    ) {
+      halamanSaatIni = totalHalaman;
+    }
+
+    const mulai =
+      (halamanSaatIni - 1) *
+      jumlahPerHalaman;
+
+    const akhir =
+      mulai + jumlahPerHalaman;
+
+    const dataHalaman =
+      dataLaporan.slice(
+        mulai,
+        akhir,
+      );
+
     tableBody.innerHTML = "";
 
-    dataLaporan.forEach(
+    dataHalaman.forEach(
       (item) => {
         const tr =
           document.createElement(
@@ -1111,15 +1586,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           </td>
         `;
 
-        tableBody.appendChild(
-          tr,
-        );
+        tableBody.appendChild(tr);
       },
     );
+
+    renderPagination();
   }
 
   // =========================================================
-  // CETAK LAPORAN
+  // CETAK
   // =========================================================
 
   function cetakLaporan() {
@@ -1135,76 +1610,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    const namaBulanCetak =
-      periodeLaporan.bulan ||
-      "Laporan";
-
-    const tahunCetak =
-      periodeLaporan.tahun ||
-      new Date().getFullYear();
-
-    // =======================================================
-    // BARIS TABEL
-    // =======================================================
-
     const rows =
       dataLaporan
         .map(
-          (item, index) => {
-            return `
-              <tr>
-                <td class="center">
-                  ${index + 1}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    item.nomor_bast,
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    item.nama_pegawai,
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    item.barang,
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    formatTanggal(
-                      item.tanggal_pinjam,
-                    ),
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    formatTanggal(
-                      item.tanggal_kembali,
-                    ),
-                  )}
-                </td>
-
-                <td>
-                  ${escapeHtml(
-                    item.kondisi,
-                  )}
-                </td>
-              </tr>
-            `;
-          },
+          (item, index) => `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${escapeHtml(item.nomor_bast)}</td>
+              <td>${escapeHtml(item.nama_pegawai)}</td>
+              <td>${escapeHtml(item.barang)}</td>
+              <td>${escapeHtml(formatTanggal(item.tanggal_pinjam))}</td>
+              <td>${escapeHtml(formatTanggal(item.tanggal_kembali))}</td>
+              <td>${escapeHtml(item.kondisi)}</td>
+            </tr>
+          `,
         )
         .join("");
-
-    // =======================================================
-    // OPEN PRINT WINDOW
-    // =======================================================
 
     const printWindow =
       window.open(
@@ -1215,119 +1636,77 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!printWindow) {
       window.showToast?.(
-        "Popup diblokir browser. Izinkan popup untuk mencetak laporan.",
+        "Popup diblokir browser.",
         "error",
       );
 
       return;
     }
 
-    printWindow.document.open();
-
     printWindow.document.write(`
-      <!DOCTYPE html>
+      <!doctype html>
 
       <html lang="id">
 
       <head>
+
         <meta charset="UTF-8">
 
         <title>
-          Laporan Peminjaman
-          ${escapeHtml(
-            namaBulanCetak,
-          )}
-          ${escapeHtml(
-            tahunCetak,
-          )}
+          Laporan ${escapeHtml(periode.bulan)}
+          ${escapeHtml(periode.tahun)}
         </title>
 
         <style>
+
           * {
             box-sizing: border-box;
           }
 
           body {
+            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 30px;
-            font-family:
-              Arial,
-              Helvetica,
-              sans-serif;
-
+            padding: 25px;
             color: #111;
-            background: #fff;
-
-            font-size: 12px;
           }
 
-          .print-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-          }
-
-          .print-header {
+          .header {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 25px;
           }
 
-          .print-header h1 {
-            margin:
-              0 0 6px;
-
+          .header h1 {
+            margin: 0 0 5px;
             font-size: 20px;
-            font-weight: 700;
           }
 
-          .print-header h2 {
+          .header p {
             margin: 0;
-
-            font-size: 15px;
-            font-weight: 600;
-          }
-
-          .print-header p {
-            margin:
-              8px 0 0;
-
-            font-size: 12px;
+            font-size: 13px;
           }
 
           table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
           }
 
           th,
           td {
-            border:
-              1px solid #222;
-
-            padding:
-              8px 7px;
-
+            border: 1px solid #222;
+            padding: 7px;
+            font-size: 11px;
             vertical-align: top;
-
-            word-wrap:
-              break-word;
           }
 
           th {
-            text-align: center;
-            font-weight: 700;
             background: #f2f2f2;
-          }
-
-          .center {
             text-align: center;
           }
 
           .footer {
             margin-top: 20px;
-            font-size: 11px;
             text-align: right;
+            font-size: 10px;
           }
 
           @page {
@@ -1335,97 +1714,57 @@ document.addEventListener("DOMContentLoaded", async () => {
             margin: 12mm;
           }
 
-          @media print {
-            body {
-              padding: 0;
-            }
-
-            .print-container {
-              max-width: none;
-            }
-          }
         </style>
+
       </head>
 
       <body>
 
-        <div class="print-container">
+        <div class="header">
 
-          <div class="print-header">
+          <h1>
+            LAPORAN PEMINJAMAN BARANG
+          </h1>
 
-            <h1>
-              LAPORAN PEMINJAMAN BARANG
-            </h1>
+          <p>
+            ${escapeHtml(periode.bulan)}
+            ${escapeHtml(periode.tahun)}
+          </p>
 
-            <h2>
-              ${escapeHtml(
-                namaBulanCetak,
-              )}
-              ${escapeHtml(
-                tahunCetak,
-              )}
-            </h2>
+        </div>
 
-            <p>
-              Rincian Transaksi Peminjaman
-            </p>
+        <table>
 
-          </div>
+          <thead>
 
-          <table>
+            <tr>
+              <th>No</th>
+              <th>No. BAST</th>
+              <th>Pegawai</th>
+              <th>Barang</th>
+              <th>Tgl Pinjam</th>
+              <th>Tgl Kembali</th>
+              <th>Kondisi</th>
+            </tr>
 
-            <thead>
-              <tr>
-                <th style="width: 5%;">
-                  No
-                </th>
+          </thead>
 
-                <th style="width: 17%;">
-                  No. BAST
-                </th>
+          <tbody>
+            ${rows}
+          </tbody>
 
-                <th style="width: 14%;">
-                  Pegawai
-                </th>
+        </table>
 
-                <th style="width: 24%;">
-                  Barang
-                </th>
-
-                <th style="width: 11%;">
-                  Tgl Pinjam
-                </th>
-
-                <th style="width: 11%;">
-                  Tgl Kembali
-                </th>
-
-                <th style="width: 18%;">
-                  Kondisi
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              ${rows}
-            </tbody>
-
-          </table>
-
-          <div class="footer">
-            Dicetak pada
-            ${escapeHtml(
-              new Date().toLocaleDateString(
-                "id-ID",
-                {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                },
-              ),
-            )}
-          </div>
-
+        <div class="footer">
+          Dicetak pada
+          ${new Date().toLocaleDateString(
+            "id-ID",
+            {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            },
+          )}
         </div>
 
       </body>
@@ -1435,95 +1774,130 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     printWindow.document.close();
 
-    // =======================================================
-    // PRINT
-    // =======================================================
-
     printWindow.onload = () => {
       printWindow.focus();
 
       printWindow.print();
 
-      printWindow.onafterprint =
-        () => {
-          printWindow.close();
-        };
+      printWindow.onafterprint = () => {
+        printWindow.close();
+      };
     };
   }
-
-  // =========================================================
-  // EVENT DROPDOWN BULAN
-  // =========================================================
-
-  // =========================================================
-  // EVENT DROPDOWN TAHUN
-  // =========================================================
-
-  // =========================================================
-  // EVENT CETAK
-  // =========================================================
-
-  btnCetak?.addEventListener(
-    "click",
-    cetakLaporan,
-  );
 
   // =========================================================
   // ERROR
   // =========================================================
 
   function tampilkanError() {
-    if (transaksiValue) {
-      transaksiValue.textContent =
-        "—";
-    }
+    statTransaksi.textContent = "—";
+    statDikembalikan.textContent = "—";
+    statRusak.textContent = "—";
+    statPegawai.textContent = "—";
 
-    if (dikembalikanValue) {
-      dikembalikanValue.textContent =
-        "—";
-    }
+    statTransaksiInfo.textContent =
+      "Gagal mengambil data";
 
-    if (rusakValue) {
-      rusakValue.textContent =
-        "—";
-    }
+    statDikembalikanInfo.textContent =
+      "Gagal mengambil data";
 
-    if (pegawaiValue) {
-      pegawaiValue.textContent =
-        "—";
-    }
+    statRusakInfo.textContent =
+      "Gagal mengambil data";
 
-    if (tableBody) {
-      tableBody.innerHTML = `
-        <tr>
-          <td
-            colspan="6"
-            style="text-align:center; padding:2rem;"
-          >
-            Gagal mengambil data laporan.
-            Cek Console untuk melihat error.
-          </td>
-        </tr>
-      `;
-    }
+    statPegawaiInfo.textContent =
+      "Gagal mengambil data";
+
+    dataLaporan = [];
+    halamanSaatIni = 1;
+
+    tableBody.innerHTML = `
+      <tr>
+        <td
+          colspan="6"
+          class="laporan-empty"
+        >
+          Gagal mengambil data laporan.
+          Silakan cek Console browser.
+        </td>
+      </tr>
+    `;
+
+    renderPagination();
+
+    renderGrafikAktivitas(
+      Array(12).fill(0),
+      Array(12).fill(0),
+    );
+
+    renderGrafikKondisi({
+      baik: 0,
+      rusak: 0,
+      hilang: 0,
+      tidakLengkap: 0,
+    });
   }
+
+  // =========================================================
+  // EVENT
+  // =========================================================
+
+  monthSelect.addEventListener(
+    "change",
+    loadReport,
+  );
+
+  yearSelect.addEventListener(
+    "change",
+    loadReport,
+  );
+
+  btnCetak?.addEventListener(
+    "click",
+    cetakLaporan,
+  );
+
+  paginationPrev?.addEventListener(
+    "click",
+    () => {
+      if (halamanSaatIni > 1) {
+        halamanSaatIni--;
+        renderTable();
+      }
+    },
+  );
+
+  paginationNext?.addEventListener(
+    "click",
+    () => {
+      if (
+        halamanSaatIni <
+        getTotalHalaman()
+      ) {
+        halamanSaatIni++;
+        renderTable();
+      }
+    },
+  );
+
+  paginationPageSize?.addEventListener(
+    "change",
+    () => {
+      jumlahPerHalaman =
+        Number(
+          paginationPageSize.value,
+        ) || 10;
+
+      halamanSaatIni = 1;
+
+      renderTable();
+    },
+  );
 
   // =========================================================
   // MULAI
   // =========================================================
 
-  isiDropdownPeriode();
-
-  // Event harus dipasang setelah dropdown dibuat
-  monthSelect?.addEventListener(
-    "change",
-    loadReport,
-  );
-
-  yearSelect?.addEventListener(
-    "change",
-    loadReport,
-  );
+  setupDropdown();
 
   await loadReport();
 });
